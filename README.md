@@ -28,6 +28,16 @@ Mission pack was written in SCM language using Sanny Builder as an IDE and compi
 [Sanny Builder 3](https://sannybuilder.com/index.html) - IDE for SCM language
 [mta2scm](http://www.gta-mods.pl/mta2scm) - self-made online tool for converting MTA map files into SCM code. Useful when creating large scenes with lots of actors, cars and objects.
 
+## Installing
+The .exe installer is located at `installer/Output/ine.exe`. Package for the use with Mod Loader is in `modloader` folder. You can also download a ready package from the official website:
+
+http://www.gta-mods.pl/pliki/630/gta-sa-it-never-ends-zestaw-misji (installer)
+http://www.gta-mods.pl/pliki/763/gta-sa-it-never-ends-paczka-dla-modloadera (modloader)
+
+## YouTube trailer
+https://www.youtube.com/watch?v=5MsBr8vZIB0
+There are also some gameplay videos available on YouTube.
+
 ## Authors and contributors
 - MakG
 - Silent
