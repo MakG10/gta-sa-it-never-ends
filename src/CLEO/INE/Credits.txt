@@ -1,0 +1,280 @@
+{$CLEO .cm}
+{$INCLUDE global_header.txt}
+
+thread "credits"
+$ONMISSION = 1
+
+0@ = PASSED_MISSIONS
+0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 28@
+if
+    28@ == MISSION_FINALE
+then
+    0@ = PASSED_MISSIONS
+    1@ = CREDITS
+    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var PASSED_MISSIONS value CREDITS
+end
+
+01B4: set_player $PLAYER_CHAR can_move 1
+
+0AAC: 10@ = load_audiostream "CLEO\INE\audio\music\hisboyelroy_-_revolve.mp3"
+0390: load_txd_dictionary 'ine'
+038F: load_texture "ine" as 1
+
+{0247: load_model #DESERT_EAGLE
+0247: load_model 166 // Bill Degorio
+0247: load_model 125 // Bill's Man
+0247: load_model 121 // Da Nang Boy #1
+0247: load_model 122 // Da Nang Boy #1
+0247: load_model 123 // Da Nang Boy #1
+0247: load_model 118 // Czlowiek Wooziego
+023C: load_special_actor 'SWEET' as 1
+023C: load_special_actor 'FBIBOSS' as 2
+
+038B: load_requested_models
+
+00A1: put_actor $PLAYER_ACTOR at 2490.1721 -1667.7841 13.3438
+0350: set_actor $PLAYER_ACTOR maintain_position_when_attacked 1
+gosub @SetPlayerWeapon
+
+009A: 4@ = create_actor_pedtype 4 model 166 at 2490.3098 -1666.2677 13.3438
+    0223: set_actor 4@ health_to 1
+009A: 5@ = create_actor_pedtype 4 model 125 at 2491.0593 -1665.7043 13.3438
+    0223: set_actor 5@ health_to 1
+009A: 6@ = create_actor_pedtype 4 model 121 at 2492.2107 -1665.7446 13.3438
+009A: 7@ = create_actor_pedtype 4 model 122 at 2492.4236 -1666.2955 13.3438
+009A: 8@ = create_actor_pedtype 4 model 123 at 2492.5278 -1667.0178 13.3438
+009A: 9@ = create_actor_pedtype 4 model 118 at 2492.137 -1667.9337 13.3438
+009A: 10@ = create_actor_pedtype 4 model #SPECIAL02 at 2491.2559 -1668.5083 13.3438
+009A: 11@ = create_actor_pedtype 4 model #SPECIAL01 at 2490.1753 -1668.5048 13.3438
+
+fade 0 0
+wait 1000}
+
+0AAD: set_audiostream 10@ perform_action 1
+0ABC: set_audiostream 10@ volume 1.0
+
+fade 0 0
+wait 1000
+
+0ACD: show_text_highpriority "www.gta-mods.pl" time 4000
+
+03F0: enable_text_draw 1
+03E3: set_texture_to_be_drawn_antialiased 1
+9@ = 1
+while true
+    wait 0
+    038D: draw_texture 1 position 320.0 220.0 size 400.0 400.0 RGBA 200 200 200 0@
+    
+    9@ += 4
+    
+    if
+        9@ >= 255
+    then
+        break
+    end
+end
+
+9@ = 255
+while true
+    wait 0
+    038D: draw_texture 1 position 320.0 220.0 size 400.0 400.0 RGBA 200 200 200 0@
+    
+    9@ -= 4
+    
+    if
+        9@ <= 0
+    then
+        break
+    end
+end
+
+//fade 1 0
+
+0707: start_scene_skip_to @Skip_Credits
+
+0434: show_credits
+
+{0922: set_camera_zoom_in_factor 25.0 out_factor 15.0 timelimit 4000 mode 1
+0931: lock_camera_zoom 1
+
+0936: set_camera 2468.4248 -1666.9432 13.2963 position_to 2470.1562 -1674.4558 13.3356 time 4000 drop_mode 1
+0920: point_camera 2490.865 -1667.2168 13.3438 transverse_to 2490.865 -1667.2168 13.3438 time 4000 mode 1
+wait 3500       
+
+20@ = 119.0
+gosub @RotateActors 
+
+068D: get_camera_position_to 1@ 2@ 3@
+0936: set_camera 1@ 2@ 3@ position_to 2478.8799 -1682.9408 13.3359 time 4000 drop_mode 1
+0920: point_camera 2490.865 -1667.2168 13.3438 transverse_to 2490.865 -1667.2168 13.3438 time 4000 mode 1
+wait 3500
+
+20@ = 141.0
+gosub @RotateActors 
+
+068D: get_camera_position_to 1@ 2@ 3@
+0936: set_camera 1@ 2@ 3@ position_to 2493.731 -1683.6394 13.3381 time 4000 drop_mode 1
+0920: point_camera 2490.865 -1667.2168 13.3438 transverse_to 2490.865 -1667.2168 13.3438 time 4000 mode 1
+
+wait 3500
+
+20@ = 190.0
+gosub @RotateActors 
+
+068D: get_camera_position_to 1@ 2@ 3@
+0936: set_camera 1@ 2@ 3@ position_to 2502.5369 -1681.6708 13.3839 time 3000 drop_mode 1
+0920: point_camera 2490.865 -1667.2168 13.3438 transverse_to 2490.865 -1667.2168 13.3438 time 3000 mode 1  
+wait 2500
+
+20@ = 225.0
+gosub @RotateActors 
+
+068D: get_camera_position_to 1@ 2@ 3@
+0936: set_camera 1@ 2@ 3@ position_to 2508.499 -1674.9714 13.3751 time 3000 drop_mode 1
+0920: point_camera 2490.865 -1667.2168 13.3438 transverse_to 2490.865 -1667.2168 13.3438 time 3000 mode 1    
+wait 2500
+
+20@ = 259.0
+gosub @RotateActors 
+
+068D: get_camera_position_to 1@ 2@ 3@
+0936: set_camera 1@ 2@ 3@ position_to 2508.5859 -1663.2448 13.4215 time 3500 drop_mode 1
+0920: point_camera 2490.865 -1667.2168 13.3438 transverse_to 2490.865 -1667.2168 13.3438 time 3500 mode 1      
+wait 3000
+
+20@ = 309.0
+gosub @RotateActors 
+
+068D: get_camera_position_to 1@ 2@ 3@
+0936: set_camera 1@ 2@ 3@ position_to 2500.8157 -1655.4498 13.4204 time 3000 drop_mode 1
+0920: point_camera 2490.865 -1667.2168 13.3438 transverse_to 2490.865 -1667.2168 13.3438 time 3000 mode 1     
+wait 2500
+
+068D: get_camera_position_to 1@ 2@ 3@
+0936: set_camera 1@ 2@ 3@ position_to 2468.3591 -1654.4552 13.338 time 16000 drop_mode 1
+0920: point_camera 2490.865 -1667.2168 13.3438 transverse_to 2490.865 -1667.2168 13.3438 time 16000 mode 1  
+0930: lock_camera_position 1
+092F: lock_camera_target_point 1
+
+0635: AS_actor $PLAYER_ACTOR aim_at_actor 5@ 1000 ms
+wait 900
+05E2: AS_actor $PLAYER_ACTOR kill_actor 5@
+wait 400
+
+0635: AS_actor $PLAYER_ACTOR aim_at_actor 4@ 1000 ms
+wait 900
+05E2: AS_actor $PLAYER_ACTOR kill_actor 4@
+wait 400
+
+
+wait 2400
+
+20@ = 40.0
+gosub @RotateActors 
+
+wait 5000
+
+20@ = 75.0
+gosub @RotateActors 
+wait 6000
+
+05D3: AS_actor $PLAYER_ACTOR goto_point 2468.3591 -1654.4552 13.338 mode 6 time -1 ms
+wait 500
+05D3: AS_actor 4@ goto_point 2468.3591 -1654.4552 13.338 mode 6 time -1 ms
+05D3: AS_actor 5@ goto_point 2468.3591 -1654.4552 13.338 mode 6 time -1 ms
+05D3: AS_actor 6@ goto_point 2468.3591 -1654.4552 13.338 mode 6 time -1 ms
+05D3: AS_actor 7@ goto_point 2468.3591 -1654.4552 13.338 mode 6 time -1 ms
+05D3: AS_actor 8@ goto_point 2468.3591 -1654.4552 13.338 mode 6 time -1 ms
+05D3: AS_actor 9@ goto_point 2468.3591 -1654.4552 13.338 mode 6 time -1 ms
+05D3: AS_actor 10@ goto_point 2468.3591 -1654.4552 13.338 mode 6 time -1 ms
+05D3: AS_actor 11@ goto_point 2468.3591 -1654.4552 13.338 mode 6 time -1 ms
+
+while true
+    wait 0
+    if
+        00EC:   actor $PLAYER_ACTOR sphere 0 near_point 2468.3591 -1654.4552 radius 8.0 8.0
+    then
+        fade 0 2000
+        break
+    end
+end
+
+wait 3000
+
+009B: destroy_actor 4@
+009B: destroy_actor 5@
+009B: destroy_actor 6@
+009B: destroy_actor 7@
+009B: destroy_actor 8@
+009B: destroy_actor 9@
+009B: destroy_actor 10@
+009B: destroy_actor 11@
+
+00A1: put_actor $PLAYER_ACTOR at 2495.3396 -1687.6161 13.516
+
+wait 15000}
+
+wait 55000
+
+0701: end_scene_skip
+
+:Skip_Credits
+
+0AAE: release_mp3 10@
+0435: end_credits
+fade 1 1000
+//0AAD: set_audiostream 0@ perform_action 0
+
+$ONMISSION = 0
+0930: lock_camera_position 0
+0931: lock_camera_zoom 0
+092F: lock_camera_target_point 0
+
+end_thread
+
+
+:RotateActors
+05D4: AS_actor $PLAYER_ACTOR rotate_angle 20@
+05D4: AS_actor 4@ rotate_angle 20@
+05D4: AS_actor 5@ rotate_angle 20@
+05D4: AS_actor 6@ rotate_angle 20@
+05D4: AS_actor 7@ rotate_angle 20@
+05D4: AS_actor 8@ rotate_angle 20@
+05D4: AS_actor 9@ rotate_angle 20@
+05D4: AS_actor 10@ rotate_angle 20@
+05D4: AS_actor 11@ rotate_angle 20@
+return
+
+:SetPlayerWeapon
+if and
+    8491:   not actor $PLAYER_ACTOR has_weapon 22
+    8491:   not actor $PLAYER_ACTOR has_weapon 23
+    8491:   not actor $PLAYER_ACTOR has_weapon 24
+then
+    01B2: give_actor $PLAYER_ACTOR weapon 24 ammo 7
+    01B9: set_actor $PLAYER_ACTOR armed_weapon_to 24
+else
+    if
+        0491:   actor $PLAYER_ACTOR has_weapon 22
+    then
+        01B9: set_actor $PLAYER_ACTOR armed_weapon_to 22
+    else
+        if
+            0491:   actor $PLAYER_ACTOR has_weapon 23
+        then
+            01B9: set_actor $PLAYER_ACTOR armed_weapon_to 23
+        else
+            if
+                0491:   actor $PLAYER_ACTOR has_weapon 24
+            then
+                01B9: set_actor $PLAYER_ACTOR armed_weapon_to 24
+            end
+        end
+    end
+end
+return
+
+{$INCLUDE mission_includes.txt}
+hex
+020001
+end

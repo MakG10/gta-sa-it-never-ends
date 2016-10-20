@@ -1,0 +1,1477 @@
+// 49@ - zarezerwowane na samochod gracza
+// 311@ - zmienna zawierajace aktualny odpowiednik audio dla tekstu
+// 311@_X, 311@_Y, 311@_Z
+
+{$CLEO .cm}
+{$INCLUDE global_header.txt}
+
+thread 'Eye4Eye'
+
+:Mission
+$ONMISSION = 1
+03CB: set_rendering_origin_at 1576.063 -1475.0518 14.2247
+
+fade 0 1500
+gosub @Mission_Fading
+04BB: select_interior 0 
+0860: link_actor $PLAYER_ACTOR to_interior 0
+
+0050: gosub @Mission_Start 
+if 
+ 0112: wasted_or_busted // mission only 
+then
+ 0050: gosub @Mission_Failed 
+end
+0050: gosub @Mission_Cleanup
+
+$ONMISSION = 0
+end_thread
+
+
+:Mission_Start
+0@ = INE_BITMASK
+0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var INE_BITMASK value_to 351@
+// 124@ - gangster
+311@ = 0 // zaden dzwiek nie zostal jeszcze zaladowany
+
+Player.CanMove($PLAYER_CHAR) = False
+fade 0 1500
+
+04ED: load_animation "INE"
+04ED: load_animation "fight_d"
+Model.Load(121)  // Da Nang Boys #1
+Model.Load(122)  // Da Nang Boys #2
+Model.Load(123)  // Da Nang Boys #3
+Model.Load(125)  // Wyslannik Szefa
+Model.Load(355)  // AK47
+Model.Load(347)  // Silenced Pistol
+Model.Load(402)  // Buffalo - Enemy Car
+Model.Load(498)  // Boxville - ciezarowka
+Model.Load(1221) // Skrzynka
+Model.Load(#CELLPHONE)
+038B: load_requested_models
+
+:Mission_Load_Models
+wait 0
+if and
+ Model.Available(121) 
+ Model.Available(122) 
+ Model.Available(123)
+// Model.Available(28)  
+// Model.Available(280)
+ Model.Available(355)
+ Model.Available(402)
+ Model.Available(498) 
+jf @Mission_Load_Models
+
+:Mission_Load_Models2
+wait 0
+if and
+ Model.Available(125)
+ Model.Available(347)
+ Model.Available(#CELLPHONE)
+ 04EE:   animation "INE" loaded
+ 04EE:   animation "fight_d" loaded 
+ Model.Available(1221)
+jf @Mission_Load_Models2
+
+Actor.PutAt($PLAYER_ACTOR, 1576.75, -1475.0518, 14.2247)
+Actor.Angle($PLAYER_ACTOR) = -90.0
+
+Camera.SetPosition(1562.12, -1483.1, 16.1531, 0.0 0.0 0.0)
+0159: camera_on_ped $PLAYER_ACTOR 15 2
+
+03CB: set_rendering_origin_at 1576.663 -1475.0518 14.2247
+0395: clear_area 1 at 1576.62 -1483.7 14.2247 radius 10.0
+
+01B9: set_actor $PLAYER_ACTOR armed_weapon_to 0 
+
+0605: actor $PLAYER_ACTOR perform_animation_sequence "knocking" IFP_file "INE" 4.0 loop 1 0 0 0 time 7000
+
+wait 2000
+02A3: enable_widescreen 1
+0707: start_scene_skip_to @Mission_Cutscene_Skip
+fade 1 1500
+ 
+0936: set_camera 1562.12 -1483.1 17.1531 position_to 1575.0 -1479.1 15.1531 time 6000 drop_mode 1
+0920: point_camera 1576.663 -1475.0518 15.2247 transverse_to 1577.063 -1475.8518 15.6247 time 6000 mode 1
+
+//0605: actor $PLAYER_ACTOR perform_animation_sequence "FightA_1" IFP_file "PED" 4.0 loop 1 0 0 0 time 500
+//wait 1000
+//0605: actor $PLAYER_ACTOR perform_animation_sequence "FightA_1" IFP_file "PED" 4.0 loop 1 0 0 0 time 1000
+//wait 1000
+//0605: actor $PLAYER_ACTOR perform_animation_sequence "FightA_1" IFP_file "PED" 4.0 loop 1 0 0 0 time 1000
+//wait 1800
+//0605: actor $PLAYER_ACTOR perform_animation_sequence "FightA_1" IFP_file "PED" 4.0 loop 1 0 0 0 time 500
+//wait 1000
+//0605: actor $PLAYER_ACTOR perform_animation_sequence "FightA_1" IFP_file "PED" 4.0 loop 1 0 0 0 time 1200
+//wait 500
+
+32@ = 0
+while true
+    wait 0
+    if
+        32@ > 3500
+    then
+        0605: actor $PLAYER_ACTOR perform_animation_sequence "FightD_G" IFP_file "fight_d" 4.0 loop 1 0 0 0 time -1
+        break
+    end
+end
+
+
+009A: 124@ = create_actor_pedtype 12 model 125 at 1583.62 -1489.7 14.2247
+01B2: give_actor 124@ weapon 23 ammo 60
+01B9: set_actor 124@ armed_weapon_to 23
+wait 700
+
+Camera.SetPosition(1575.0, -1479.1, 15.1531, 0.0 0.0 0.0)
+
+0159: camera_on_ped 124@ 15 2
+05D3: AS_actor 124@ goto_point 1576.62 -1483.7 14.2247 mode 6 6000 ms // versionA
+
+:Mission_check1
+wait 0
+if
+ 00F0:   actor 124@ 0 near_point 1576.62 -1483.7 radius 1.0 1.0 stopped_on_foot
+jf @Mission_check1
+
+0635: AS_actor 124@ aim_at_actor $PLAYER_ACTOR -1 ms  
+wait 1000
+
+0159: camera_on_ped $PLAYER_ACTOR 15 2
+//0605: actor $PLAYER_ACTOR perform_animation_sequence "knocking" IFP_file "INE" 4.0 loop 1 0 0 0 time 1500
+//0605: actor $PLAYER_ACTOR perform_animation_sequence "FightA_1" IFP_file "PED" 4.0 loop 1 0 0 0 time 1500
+wait 1500
+
+
+0159: camera_on_ped 124@ 15 2
+00BC: show_text_highpriority GXT 'M3T2' time 3400 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\man\m3t2.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor 124@
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\man\m3t2.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 3400
+0AAE: release_audiostream 311@
+
+0687: clear_actor $PLAYER_ACTOR task 
+
+0159: camera_on_ped $PLAYER_ACTOR 15 2
+05BF: AS_actor $PLAYER_ACTOR look_at_actor 124@ 30000 ms 
+0639: AS_actor $PLAYER_ACTOR rotate_to_actor 124@ 
+wait 1000
+
+00BC: show_text_highpriority GXT 'M3T3' time 1500 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\cj\m3t3.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\cj\m3t3.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+
+wait 1700
+0AAE: release_audiostream 311@
+
+0159: camera_on_ped 124@ 15 2
+00BC: show_text_highpriority GXT 'M3T4' time 2300 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\man\m3t4.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor 124@
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\man\m3t4.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 3000
+0AAE: release_audiostream 311@
+
+00BC: show_text_highpriority GXT 'M3T5' time 4500 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\man\m3t5.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor 124@
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\man\m3t5.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 4600
+0AAE: release_audiostream 311@
+
+0729: AS_actor $PLAYER_ACTOR hold_cellphone 1
+
+0936: set_camera 1575.0 -1479.1 15.1531 position_to 1576.0 -1479.1 15.1531 time 4000 drop_mode 1
+0920: point_camera 1576.663 -1475.0518 15.2247 transverse_to 1577.063 -1475.8518 15.6247 time 4000 mode 1
+0159: camera_on_ped $PLAYER_ACTOR 15 2
+wait 4000 
+
+Camera.SetPosition(1576.3037, -1481.3033, 13.5469, 0.0 0.0 0.0)
+0160: set_camera_point_at 1577.62 -1483.7 14.4175 mode 2 
+
+
+00BC: show_text_highpriority GXT 'M3T6' time 1300 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\man\m3t6.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor 124@
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\man\m3t6.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 1400
+0AAE: release_audiostream 311@
+
+Camera.SetPosition(1562.12, -1483.1, 16.1531, 0.0 0.0 0.0)
+0159: camera_on_ped $PLAYER_ACTOR 15 2
+00BC: show_text_highpriority GXT 'M3T7' time 1500 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\cj\m3t7.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\cj\m3t7.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 1700
+
+00BC: show_text_highpriority GXT 'M3T8' time 1200 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\man\m3t8.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor 124@
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\man\m3t8.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 1300
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T9' time 500 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\cj\m3t9.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\cj\m3t9.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 600
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T10' time 2000 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\man\m3t10.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor 124@
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\man\m3t10.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 2500
+0AAE: release_audiostream 311@
+
+
+05D4: AS_actor $PLAYER_ACTOR rotate_angle 0.0 
+wait 1000
+0729: AS_actor $PLAYER_ACTOR hold_cellphone 1
+wait 1500
+
+Camera.SetPosition(1576.16, -1472.7, 14.8531, 0.0 0.0 0.0)
+0159: camera_on_ped $PLAYER_ACTOR 15 2
+wait 1000
+
+00BC: show_text_highpriority GXT 'M3T11' time 1500 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\cj\m3t11.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\cj\m3t11.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 2000
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T12' time 500 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\boss\m3t12.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\boss\m3t12.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+05D3: AS_actor 124@ goto_point 1586.66 -1482.7 14.8247 mode 6 6000 ms
+wait 700
+0AAE: release_audiostream 311@
+
+
+
+00BC: show_text_highpriority GXT 'M3T13' time 2500 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\cj\m3t13.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\cj\m3t13.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 3000
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T14' time 4000 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\boss\m3t14.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\boss\m3t14.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 4000
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T15' time 2500 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\boss\m3t15.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\boss\m3t15.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 2500
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T16' time 800 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\boss\m3t16.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\boss\m3t16.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 500
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T17' time 3500 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\cj\m3t17.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\cj\m3t17.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 4000
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T18' time 1800 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\boss\m3t18.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\boss\m3t18.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 2300
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T19' time 1200 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\cj\m3t19.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\cj\m3t19.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 1400
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T20' time 5300 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\boss\m3t20.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\boss\m3t20.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+
+wait 5500
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T21' time 3000 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\boss\m3t21.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\boss\m3t21.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 3500
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T22' time 2500 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\boss\m3t22.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\boss\m3t22.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 2500
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T23' time 4500 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\boss\m3t23.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\boss\m3t23.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 4500
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T24' time 1000 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\boss\m3t24.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\boss\m3t24.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 1500
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T25' time 1500 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\cj\m3t25.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\cj\m3t25.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+07CD: AS_actor $PLAYER_ACTOR walk_to 1576.963 -1476.0518 14.2247 stop_with_angle 180.0 within_radius 0.5
+009B: destroy_actor 124@ 
+wait 1500
+0AAE: release_audiostream 311@
+
+
+0729: AS_actor $PLAYER_ACTOR hold_cellphone 1
+wait 2000
+
+00BC: show_text_highpriority GXT 'M3T26' time 1000 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\cj\m3t26.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\cj\m3t26.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 1500
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T27' time 3700 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\boss\m3t27.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\boss\m3t27.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+
+0701: end_scene_skip 
+Player.CanMove($PLAYER_CHAR) = True
+015A: restore_camera
+wait 4200
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T28' time 4300 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\boss\m3t28.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\boss\m3t28.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 5000
+0AAE: release_audiostream 311@
+
+
+00BC: show_text_highpriority GXT 'M3T29' time 4400 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\boss\m3t29.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\boss\m3t29.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 5000
+0AAE: release_audiostream 311@
+311@ = 0
+
+
+0729: AS_actor $PLAYER_ACTOR hold_cellphone 0
+wait 2000
+
+jump @Mission_Cutscene_Cleanup
+
+:Mission_Cutscene_Skip
+fade 0 500
+gosub @Mission_Fading
+
+if
+    not 311@ == 0
+then
+    0AAD: set_audiostream 311@ perform_action 0
+end
+
+0936: set_camera 1562.12 -1483.1 17.1531 position_to 1575.0 -1479.1 15.1531 time 1 drop_mode 1
+0920: point_camera 1576.663 -1475.0518 15.2247 transverse_to 1577.063 -1475.8518 15.6247 time 1 mode 1
+
+Actor.PutAt($PLAYER_ACTOR, 1576.663, -1475.0518, 14.2247)
+Actor.Angle($PLAYER_ACTOR) = 90.0
+
+
+:Mission_Cutscene_Cleanup
+0687: clear_actor $PLAYER_ACTOR task 
+009B: destroy_actor 124@
+
+
+
+02A3: enable_widescreen 0
+Player.CanMove($PLAYER_CHAR) = True
+0936: set_camera 1576.663 -1475.0518 14.2247 position_to 1576.663 -1475.0518 14.2247 time 1 drop_mode 2
+0920: point_camera 1576.663 -1475.0518 15.2247 transverse_to 1577.063 -1475.8518 15.6247 time 1 mode 2
+015A: restore_camera 
+
+wait 1000
+fade 1 500
+jump @Mission_Target1
+
+
+:Mission_Target1
+Model.Load(3044) // Cygaro
+04ED: load_animation "SMOKING"
+07C0: load_path 890
+038B: load_requested_models
+
+01B9: set_actor $PLAYER_ACTOR armed_weapon_to 0 
+0249: release_model #CELLPHONE
+
+:Mission_Load_Models3
+wait 0
+if and
+ Model.Available(3044) 
+ 04EE:   animation "SMOKING" loaded 
+jf @Mission_Load_Models3
+
+018A: 50@ = create_checkpoint_at 1977.96 -1577.8 14.0235
+03BC: 51@ = create_sphere_at 1977.96 -1577.8 14.0235 radius 3.0
+
+
+:Mission_Target1_Check
+wait 0
+if
+ 00EC:   actor $PLAYER_ACTOR 0 near_point 1977.96 -1577.8 radius 45.0 45.0
+jf @Mission_Target1_Check
+
+fade 0 1000
+gosub @Mission_Fading
+
+
+02A3: enable_widescreen 1
+0707: start_scene_skip_to @Mission_Cutscene2_Skip
+Player.CanMove($PLAYER_CHAR) = False
+0164: disable_marker 50@
+03BD: destroy_sphere 51@ 
+
+0107: 40@ = create_object 3044 at 0.0 0.0 0.0 // cygaro #1
+0107: 41@ = create_object 3044 at 10.0 10.0 10.0 // cygaro #2
+
+00A5: 10@ = create_car 402 at 1979.9073 -1559.9883 13.6395
+Car.Angle(10@) = 202.0
+0229: set_car 10@ primary_color_to 11 secondary_color_to 0 
+02AA: set_car 10@ immune_to_nonplayer 1 
+
+00A5: 11@ = create_car 402 at 1984.265 -1565.9795 13.3042
+Car.Angle(11@) = 91.0
+0229: set_car 11@ primary_color_to 11 secondary_color_to 0 
+02AA: set_car 11@ immune_to_nonplayer 1 
+
+00A5: 12@ = create_car 402 at 1989.9407 -1561.0717 13.327
+Car.Angle(12@) = 194.0
+0229: set_car 12@ primary_color_to 11 secondary_color_to 0 
+02AA: set_car 12@ immune_to_nonplayer 1 
+
+009A: 20@ = create_actor_pedtype 20 model 121 at 1981.9763 -1560.0809 13.6369
+ 01B2: give_actor 20@ weapon 30 ammo 500
+ 02E2: set_actor 20@ weapon_accuracy_to 70
+ 0350: set_actor 20@ maintain_position_when_attacked 1  
+009A: 21@ = create_actor_pedtype 11 model 122 at 1980.9808 -1558.2874 13.6399
+ 01B2: give_actor 21@ weapon 30 ammo 500
+ 02E2: set_actor 21@ weapon_accuracy_to 70 
+ 0350: set_actor 21@ maintain_position_when_attacked 1 
+
+009A: 22@ = create_actor_pedtype 20 model 123 at 1983.2329 -1564.3383 13.6292
+ 01B2: give_actor 22@ weapon 30 ammo 500
+ 02E2: set_actor 22@ weapon_accuracy_to 70  
+ 0350: set_actor 22@ maintain_position_when_attacked 1 
+009A: 23@ = create_actor_pedtype 20 model 122 at 1986.0636 -1563.944 13.6314
+ 070A: unknown_action_sequence 23@ 40@ 0.0 0.0 0.0 6 16 "NULL" "NULL" 0
+ 01B2: give_actor 23@ weapon 30 ammo 500
+ 02E2: set_actor 23@ weapon_accuracy_to 70 
+ 0350: set_actor 23@ maintain_position_when_attacked 1 
+
+009A: 24@ = create_actor_pedtype 20 model 121 at 1987.7709 -1563.0017 13.6341
+ 01B2: give_actor 24@ weapon 30 ammo 500
+ 02E2: set_actor 24@ weapon_accuracy_to 70 
+ 0350: set_actor 24@ maintain_position_when_attacked 1 
+009A: 25@ = create_actor_pedtype 20 model 123 at 1986.9009 -1560.1409 13.6392
+ 01B2: give_actor 25@ weapon 30 ammo 500
+ 02E2: set_actor 25@ weapon_accuracy_to 70 
+ 0350: set_actor 25@ maintain_position_when_attacked 1 
+
+009A: 26@ = create_actor_pedtype 20 model 123 at 1983.4432 -1558.4698 13.6408  // przy slupie
+ 0173: set_actor 26@ Z_angle_to 196.0
+ 070A: unknown_action_sequence 26@ 41@ 0.0 0.0 0.0 6 16 "NULL" "NULL" 0
+ 01B2: give_actor 26@ weapon 30 ammo 500
+ 02E2: set_actor 26@ weapon_accuracy_to 70 
+ 0350: set_actor 26@ maintain_position_when_attacked 1 
+
+0639: AS_actor 20@ rotate_to_actor 21@ 
+0639: AS_actor 21@ rotate_to_actor 20@ 
+0605: actor 20@ perform_animation_sequence "IDLE_CHAT" IFP_file "PED" 4.0 loop 1 0 0 0 time -1
+0605: actor 21@ perform_animation_sequence "IDLE_CHAT" IFP_file "PED" 4.0 loop 1 0 0 0 time -1
+
+
+0639: AS_actor 22@ rotate_to_actor 23@ 
+0639: AS_actor 23@ rotate_to_actor 22@
+0605: actor 23@ perform_animation_sequence "IDLE_CHAT" IFP_file "PED" 4.0 loop 1 0 0 0 time -1 
+0605: actor 23@ perform_animation_sequence "M_smkstnd_loop" IFP_file "SMOKING" 4.0 loop 1 0 0 0 time -1 
+
+0639: AS_actor 24@ rotate_to_actor 25@ 
+0639: AS_actor 25@ rotate_to_actor 24@ 
+0605: actor 24@ perform_animation_sequence "IDLE_CHAT" IFP_file "PED" 4.0 loop 1 0 0 0 time -1
+0605: actor 25@ perform_animation_sequence "IDLE_CHAT" IFP_file "PED" 4.0 loop 1 0 0 0 time -1 
+
+0605: actor 26@ perform_animation_sequence "M_smklean_loop" IFP_file "SMOKING" 4.0 loop 1 0 0 0 time -1 
+
+
+060A: create_decision_maker_type 0 store_to 91@
+07BC: set_actor 20@ decision_maker_to 91@ 
+07BC: set_actor 21@ decision_maker_to 91@ 
+07BC: set_actor 22@ decision_maker_to 91@ 
+07BC: set_actor 23@ decision_maker_to 91@ 
+07BC: set_actor 24@ decision_maker_to 91@ 
+07BC: set_actor 25@ decision_maker_to 91@ 
+07BC: set_actor 26@ decision_maker_to 91@ 
+
+
+
+if
+ 00EE:   actor $PLAYER_ACTOR 0 near_point 1977.96 -1577.8 radius 100.0 100.0 in_car 
+then
+ jump @Mission_Cutscene2_InCar
+else
+ jump @Mission_Cutscene2_OnFoot
+end
+
+
+ 
+:Mission_Cutscene2_InCar
+// 05D6: clear_scmpath
+// 05D7: add_point_to_scmpath 2028.1964 -1609.6998 13.3828 
+// 05D7: add_point_to_scmpath 2012.9847 -1607.6941 13.3828
+// 05D7: add_point_to_scmpath 2003.2753 -1602.4368 13.5493
+// 05D7: add_point_to_scmpath 1995.8401 -1600.0736 13.5484
+// 05D7: add_point_to_scmpath 1977.96 -1577.8 14.0235
+
+0395: clear_area 1 at 2028.1964 -1609.6998 13.3828 radius 15.0 
+
+00D9: 49@ = actor $PLAYER_ACTOR car
+
+0224: set_car 49@ health_to 4000 
+010D: set_player $PLAYER_CHAR wanted_level_to 0 
+
+00AB: put_car 49@ at 2028.1964 -1609.6998 13.3828
+Car.Angle(49@) = 90.0
+
+015F: set_camera_position 2005.57 -1614.38 12.8 rotation 0.0 0.0 0.0 
+0159: camera_on_ped $PLAYER_ACTOR 15 2 
+
+fade 1 1000
+
+//07E7: AS_assign_scmpath_to_actor $PLAYER_ACTOR in_car 49@ speed 30.0 flags 2 0 5
+//06BB: set_actor $PLAYER_ACTOR drive_car 49@ speed 30.0 along_SCM_path 
+05EB: assign_car 49@ to_path 890
+
+
+
+:Mission_Cutscene2_InCar_Check1
+wait 0
+if
+ 00EE:   actor $PLAYER_ACTOR 0 near_point 1977.96 -1577.8 radius 8.0 8.0 in_car 
+jf @Mission_Cutscene2_InCar_Check1
+
+0362: remove_actor $PLAYER_ACTOR from_car_and_place_at 0.0 0.0 0.0
+036A: put_actor $PLAYER_ACTOR in_car 49@
+
+05D1: AS_actor $PLAYER_ACTOR drive_car 49@ to 1977.96 -1577.8 14.0235 speed 10.0 0 model #NULL 0 
+ 
+015F: set_camera_position 1975.27 -1584.38 13.0 rotation 0.0 0.0 0.0 
+0159: camera_on_ped $PLAYER_ACTOR 15 2 
+
+:Mission_Cutscene2_InCar_Check2
+wait 0
+if
+ 860E:   not car 2@ assigned_to_path
+jf @Mission_Cutscene2_InCar_Check2
+
+//06BB: set_actor $PLAYER_ACTOR drive_car 49@ speed 0.0 along_SCM_path
+0362: remove_actor $PLAYER_ACTOR from_car_and_place_at 0.0 0.0 0.0
+036A: put_actor $PLAYER_ACTOR in_car 49@
+//00AB: put_car 49@ at 1977.96 -1577.8 14.4
+
+wait 1000
+05CD: AS_actor $PLAYER_ACTOR exit_car 49@
+wait 1500 
+
+
+0701: end_scene_skip 
+jump @Mission_Cutscene2_Continue 
+
+
+
+:Mission_Cutscene2_OnFoot
+Actor.PutAt($PLAYER_ACTOR, 1985.0238, -1589.4517, 13.2781)
+Actor.Angle($PLAYER_ACTOR) = 38.0
+
+015F: set_camera_position 1975.27 -1584.38 13.0 rotation 0.0 0.0 0.0 
+0159: camera_on_ped $PLAYER_ACTOR 15 2 
+
+wait 500
+
+05D3: AS_actor $PLAYER_ACTOR goto_point 1977.96 -1577.8 13.5 mode 4 10000 ms // versionA 
+                                                                                         
+fade 1 1000
+gosub @Mission_Fading
+
+:Mission_Cutscene2_OnFoot_Check1
+wait 0
+if
+ 00ED:   actor $PLAYER_ACTOR 0 near_point 1977.96 -1577.8 radius 1.0 1.0 on_foot 
+jf @Mission_Cutscene2_OnFoot_Check1
+
+0701: end_scene_skip 
+jump @Mission_Cutscene2_Continue 
+
+
+
+
+:Mission_Cutscene2_Continue
+0639: AS_actor $PLAYER_ACTOR rotate_to_actor 22@ 
+
+
+015F: set_camera_position 1973.1417 -1564.1633 13.6324 rotation 0.0 0.0 319.0
+0936: set_camera 1973.1417 -1564.1633 13.6324 position_to 1983.8892 -1571.7555 13.6116 time 6000 drop_mode 1 
+wait 1000
+
+0639: AS_actor 20@ rotate_to_actor $PLAYER_ACTOR 
+0639: AS_actor 21@ rotate_to_actor $PLAYER_ACTOR
+wait 500
+0639: AS_actor 22@ rotate_to_actor $PLAYER_ACTOR
+wait 500
+0639: AS_actor 23@ rotate_to_actor $PLAYER_ACTOR
+0639: AS_actor 24@ rotate_to_actor $PLAYER_ACTOR
+wait 500
+0639: AS_actor 25@ rotate_to_actor $PLAYER_ACTOR 
+
+gosub @Mission_CameraManipulated
+
+01B9: set_actor $PLAYER_ACTOR armed_weapon_to 3
+015F: set_camera_position 1975.27 -1584.38 13.0 rotation 0.0 0.0 0.0 
+0159: camera_on_ped $PLAYER_ACTOR 15 2 
+
+
+00BC: show_text_highpriority GXT 'M3T30' time 3000 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\cj\m3t30.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\cj\m3t30.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 3000
+0AAE: release_audiostream 311@
+
+
+jump @Mission_Target2
+
+
+:Mission_Cutscene2_Skip
+Actor.PutAt($PLAYER_ACTOR, 1978.5547, -1578.1224, 13.6)
+Actor.Angle($PLAYER_ACTOR) = 347.0
+
+
+
+:Mission_Target2
+02A3: enable_widescreen 0
+Player.CanMove($PLAYER_CHAR) = True
+015A: restore_camera
+
+05D6: clear_scmpath 
+05D7: add_point_to_scmpath 1964.9731 -1539.5535 13.6484
+05D7: add_point_to_scmpath 1942.1057 -1539.3066 13.6484
+05D7: add_point_to_scmpath 1930.7896 -1552.5251 13.6392
+05D7: add_point_to_scmpath 1940.4021 -1565.5748 13.6146
+05D8: AS_assign_scmpath to_actor 26@ flags 6 0 
+
+wait 1000
+01B9: set_actor 20@ armed_weapon_to 30
+01B9: set_actor 21@ armed_weapon_to 30
+01B9: set_actor 22@ armed_weapon_to 30
+01B9: set_actor 23@ armed_weapon_to 30
+01B9: set_actor 24@ armed_weapon_to 30
+01B9: set_actor 25@ armed_weapon_to 30
+01B9: set_actor 26@ armed_weapon_to 30
+
+04EB: AS_actor 22@ crouch 1 
+
+05E2: AS_actor 20@ kill_actor $PLAYER_ACTOR 
+05E2: AS_actor 21@ kill_actor $PLAYER_ACTOR 
+05E2: AS_actor 22@ kill_actor $PLAYER_ACTOR 
+05E2: AS_actor 23@ kill_actor $PLAYER_ACTOR 
+05E2: AS_actor 24@ kill_actor $PLAYER_ACTOR 
+05E2: AS_actor 25@ kill_actor $PLAYER_ACTOR
+
+0187: 90@ = create_marker_above_actor 20@ 
+0187: 91@ = create_marker_above_actor 21@ 
+0187: 92@ = create_marker_above_actor 22@ 
+0187: 93@ = create_marker_above_actor 23@ 
+0187: 94@ = create_marker_above_actor 24@ 
+0187: 95@ = create_marker_above_actor 25@ 
+0187: 96@ = create_marker_above_actor 26@  
+
+:Mission_Target2_attack_when_on_pos
+wait 0
+if
+ 00ED:   actor 26@ 0 near_point 1940.4021 -1565.5748 radius 1.0 1.0 on_foot
+jf @Mission_Target2_check1
+
+05E2: AS_actor 26@ kill_actor $PLAYER_ACTOR
+
+:Mission_Target2_check1
+wait 0
+if
+ 0118:   actor 20@ dead 
+jf @Mission_Target2_check2
+0164: disable_marker 90@
+
+:Mission_Target2_check2
+wait 0
+if
+ 0118:   actor 21@ dead 
+jf @Mission_Target2_check3
+0164: disable_marker 91@
+
+:Mission_Target2_check3
+wait 0
+if
+ 0118:   actor 22@ dead 
+jf @Mission_Target2_check4
+0164: disable_marker 92@
+
+:Mission_Target2_check4
+wait 0
+if
+ 0118:   actor 23@ dead 
+jf @Mission_Target2_check5
+0164: disable_marker 93@
+
+:Mission_Target2_check5
+wait 0
+if
+ 0118:   actor 24@ dead 
+jf @Mission_Target2_check6
+0164: disable_marker 94@
+
+:Mission_Target2_check6
+wait 0
+if
+ 0118:   actor 25@ dead 
+jf @Mission_Target2_check7
+0164: disable_marker 95@
+
+:Mission_Target2_check7
+wait 0
+if
+ 0118:   actor 26@ dead 
+jf @Mission_Target2_check_player1
+0164: disable_marker 96@
+
+:Mission_Target2_check_player1
+//wait 0
+//if
+// 0112:   wasted_or_busted
+//jf @Mission_Target2_check8
+//jump @Mission_Failed
+jump @Mission_Target2_check8
+
+:Mission_Target2_check8
+wait 0
+if and
+ 0118:   actor 20@ dead 
+ 0118:   actor 21@ dead 
+ 0118:   actor 22@ dead 
+ 0118:   actor 23@ dead 
+ 0118:   actor 24@ dead 
+ 0118:   actor 25@ dead 
+ 0118:   actor 26@ dead
+jf @Mission_Target2_attack_when_on_pos
+
+0164: disable_marker 90@
+0164: disable_marker 91@
+0164: disable_marker 92@
+0164: disable_marker 93@
+0164: disable_marker 94@
+0164: disable_marker 95@
+0164: disable_marker 96@
+
+fade 0 1000
+gosub @Mission_Fading
+jump @Mission_Cutscene3
+
+:Mission_Cutscene3
+04ED: load_animation "CRACK" 
+
+while 84EE:   not animation "CRACK" loaded  
+    wait 0
+end
+
+02A3: enable_widescreen 1
+0707: start_scene_skip_to @Mission_Cutscene3_Skip
+Player.CanMove($PLAYER_CHAR) = False
+
+0395: clear_area 1 at 1978.1807 -1568.5243 13.6171 radius 1.0 
+
+009A: 27@ = create_actor_pedtype 20 model 121 at 1968.9899 -1580.408 25.0528
+ 0350: set_actor 27@ maintain_position_when_attacked 1 
+ 01B2: give_actor 27@ weapon 30 ammo 500
+ 02E2: set_actor 27@ weapon_accuracy_to 75 
+
+009A: 28@ = create_actor_pedtype 11 model 122 at 1971.5502 -1559.4968 25.386
+ 0350: set_actor 28@ maintain_position_when_attacked 1 
+ 01B2: give_actor 28@ weapon 30 ammo 500
+ 02E2: set_actor 28@ weapon_accuracy_to 75 
+
+009A: 29@ = create_actor_pedtype 20 model 123 at 1995.0542 -1567.6755 25.2116
+ 0350: set_actor 29@ maintain_position_when_attacked 1 
+ 01B2: give_actor 29@ weapon 30 ammo 500
+ 02E2: set_actor 29@ weapon_accuracy_to 75
+
+01B9: set_actor 27@ armed_weapon_to 30
+01B9: set_actor 28@ armed_weapon_to 30
+01B9: set_actor 29@ armed_weapon_to 30
+
+0635: AS_actor 27@ aim_at_actor $PLAYER_ACTOR -1 ms
+0635: AS_actor 28@ aim_at_actor $PLAYER_ACTOR -1 ms
+0635: AS_actor 29@ aim_at_actor $PLAYER_ACTOR -1 ms
+ 
+009A: 30@ = create_actor_pedtype 11 model 123 at 1978.1807 -1568.5243 13.6171
+ 0605: actor 30@ perform_animation_sequence "crckdeth2" IFP_file "CRACK" 4.0 loop 1 0 0 0 time -1 
+ 0223: set_actor 30@ health_to 1 
+ 
+060A: create_decision_maker_type 0 store_to 91@
+07BC: set_actor 27@ decision_maker_to 91@ 
+07BC: set_actor 28@ decision_maker_to 91@ 
+07BC: set_actor 29@ decision_maker_to 91@ 
+
+
+00A1: put_actor $PLAYER_ACTOR at 1975.9702 -1571.9176 13.0
+05D4: AS_actor $PLAYER_ACTOR rotate_angle 320.0 
+//01B9: set_actor $PLAYER_ACTOR armed_weapon_to 3 
+
+015F: set_camera_position 1980.7972 -1572.2753 13.0 rotation 0.0 0.0 0.0 
+0159: camera_on_ped $PLAYER_ACTOR 15 2 
+
+wait 500
+fade 1 500
+
+05D3: AS_actor $PLAYER_ACTOR goto_point 1978.1807 -1568.5243 13.6171 mode 4 6000 ms
+
+:Mission_Cutscene3_check1
+wait 0
+if
+ 00ED:   actor $PLAYER_ACTOR 0 near_point 1978.1807 -1568.5243 radius 1.0 1.0 on_foot
+jf @Mission_Cutscene3_check1
+
+0350: set_actor $PLAYER_ACTOR maintain_position_when_attacked 1 
+0635: AS_actor $PLAYER_ACTOR aim_at_actor 30@ 2000 ms
+
+//015F: set_camera_position 1978.1807 -1568.5243 14.6171 rotation 0.0 0.0 0.0 
+//0159: camera_on_ped $PLAYER_ACTOR 15 2  
+wait 1500
+
+05E2: AS_actor $PLAYER_ACTOR kill_actor 30@ 
+
+01BD: 8@ = current_time_in_ms 
+:Mission_Cutscene3_check2
+wait 0
+if
+ 0118:   actor 30@ dead 
+jf @Mission_Cutscene3_check2_2
+jump @Mission_Cutscene3_after_kill
+
+:Mission_Cutscene3_check2_2
+wait 0
+01BD: 9@ = current_time_in_ms
+0006: 9@ -= 8@ 
+if
+ 0019:   9@ > 2500
+jf @Mission_Cutscene3_check2 
+0321: kill_actor 30@
+
+
+:Mission_Cutscene3_after_kill
+015F: set_camera_position 1980.7972 -1572.2753 13.0 rotation 0.0 0.0 0.0 
+0159: camera_on_ped 30@ 15 2 
+
+0350: set_actor $PLAYER_ACTOR maintain_position_when_attacked 0
+05D3: AS_actor $PLAYER_ACTOR goto_point 1976.5721 -1571.0488 13.6171 mode 4 6000 ms
+
+:Mission_Cutscene3_check3
+wait 0
+if
+ 00ED:   actor $PLAYER_ACTOR 0 near_point 1976.5721 -1571.0488 radius 0.5 0.5 on_foot
+jf @Mission_Cutscene3_check3
+
+015F: set_camera_position 1969.1212 -1582.3575 26.8235 rotation 0.0 0.0 0.0 
+0159: camera_on_ped $PLAYER_ACTOR 15 2 
+
+
+00BC: show_text_highpriority GXT 'M3T31' time 2000 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\da_nang\m3t31.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor 27@
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\da_nang\m3t31.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 1200
+wait 200
+
+
+//00BC: show_text_highpriority GXT 'M3T32' time 4000 flag 1
+//wait 4200
+
+015F: set_camera_position 1972.8889 -1560.2617 24.4946 rotation 0.0 0.0 40.0 
+0159: camera_on_ped 29@ 15 2 
+
+
+00BC: show_text_highpriority GXT 'M3T33' time 1000 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\da_nang\m3t33.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor 29@
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\da_nang\m3t33.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 1000
+wait 300
+0AAE: release_audiostream 311@
+
+
+
+//015F: set_camera_position 1969.1212 -1582.3575 26.8235 rotation 0.0 0.0 0.0 
+//0159: camera_on_ped $PLAYER_ACTOR 15 2 
+
+
+00A0: store_actor $PLAYER_ACTOR position_to 200@ 201@ 202@ 
+
+
+//0936: set_camera 1969.1212 -1582.3575 26.8235 position_to 1970.8348 -1579.6146 24.5784 time 1000 drop_mode 1 
+0936: set_camera 1969.1212 -1582.3575 26.8235 position_to 1970.8348 -1579.6146 24.5784 time 1000 drop_mode 1 
+0920: point_camera 200@ 201@ 14.6171 transverse_to 200@ 201@ 14.6171 time 1000 mode 1 
+wait 500
+0936: set_camera 1970.8348 -1579.6146 24.5784 position_to 1971.027 -1576.6501 17.4163 time 3000 drop_mode 1 
+0920: point_camera 200@ 201@ 14.6171 transverse_to 200@ 201@ 14.6171 time 3000 mode 1 
+
+gosub @Mission_CameraManipulated
+
+015F: set_camera_position 1971.027 -1576.6501 17.4163 rotation 0.0 0.0 0.0 
+0160: set_camera_point_at 200@ 201@ 14.6171 mode 2
+
+wait 500
+
+0160: set_camera_point_at 1972.4207 -1559.4415 25.0405 mode 1
+gosub @Mission_CameraManipulated
+
+wait 1000
+
+0160: set_camera_point_at 1995.0542 -1567.6755 25.2116 mode 1
+gosub @Mission_CameraManipulated
+
+wait 1000
+
+0160: set_camera_point_at 200@ 201@ 14.4159 mode 1
+gosub @Mission_CameraManipulated
+
+wait 1000
+
+0922: set_camera_zoom_in_factor 60.0 out_factor 10.0 timelimit 4000 mode 1 
+0931: lock_camera_zoom 1 
+wait 4000
+
+//0922: set_camera_zoom_in_factor 60.0 out_factor 10.0 timelimit 2000 mode 2
+
+00BC: show_text_highpriority GXT 'M3T35' time 2000 flag 1
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    {if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\cj\m3t35.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else}
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\cj\m3t35.mp3"
+    //end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 2000
+0AAE: release_audiostream 311@
+
+
+0931: lock_camera_zoom 0
+
+0701: end_scene_skip 
+jump @Mission_Target3
+
+
+:Mission_Cutscene3_Skip
+Actor.PutAt($PLAYER_ACTOR, 1976.5721, -1571.0488, 13.6171)
+0639: AS_actor $PLAYER_ACTOR rotate_to_actor 27@ 
+
+
+
+
+:Mission_Target3
+02A3: enable_widescreen 0
+015A: restore_camera 
+Player.CanMove($PLAYER_CHAR) = True
+
+05C4: AS_actor $PLAYER_ACTOR hands_up 9999999 ms
+
+:Mission_Target3_check1
+wait 0
+if or
+ 00E1:   player 0 pressed_key 0
+ 00E1:   player 0 pressed_key 1
+ 00E1:   player 0 pressed_key 6
+ 00E1:   player 0 pressed_key 14
+ 00E1:   player 0 pressed_key 17
+ 00E1:   player 0 pressed_key 18
+jf @Mission_Target3_check1 
+
+0687: clear_actor $PLAYER_ACTOR task 
+
+0187: 97@ = create_marker_above_actor 27@ 
+0187: 98@ = create_marker_above_actor 28@ 
+0187: 99@ = create_marker_above_actor 29@ 
+
+05E2: AS_actor 27@ kill_actor $PLAYER_ACTOR 
+05E2: AS_actor 28@ kill_actor $PLAYER_ACTOR 
+05E2: AS_actor 29@ kill_actor $PLAYER_ACTOR 
+
+:Mission_Target3_check_player1
+//wait 0
+//if
+// 0112:   wasted_or_busted
+//jf @Mission_Target3_check2
+//jump @Mission_Failed
+
+:Mission_Target3_check2
+wait 0
+if
+ 0118:   actor 27@ dead 
+jf @Mission_Target3_check3
+0164: disable_marker 97@
+
+:Mission_Target3_check3
+wait 0
+if
+ 0118:   actor 28@ dead 
+jf @Mission_Target3_check4
+0164: disable_marker 98@
+
+:Mission_Target3_check4
+wait 0
+if
+ 0118:   actor 29@ dead 
+jf @Mission_Target3_check5
+0164: disable_marker 99@
+
+:Mission_Target3_check5
+wait 0
+if and
+ 0118:   actor 27@ dead 
+ 0118:   actor 28@ dead 
+ 0118:   actor 29@ dead 
+jf @Mission_Target3_check_player1
+
+0164: disable_marker 97@
+0164: disable_marker 98@
+0164: disable_marker 99@
+
+gosub @Mission_Passed
+return
+
+
+
+:Mission_Fading
+wait 0
+if
+ 816B:   not fading 
+jf @Mission_Fading
+return
+
+:Mission_CameraManipulated
+wait 0
+if
+ 0933:   camera_position_manipulated
+then
+ jump @Mission_CameraManipulated
+else
+ return
+end
+
+:Mission_Cleanup
+00D8: mission_cleanup 
+return
+
+:Mission_Failed
+00BA: show_text_styled GXT 'M_FAIL' time 5000 style 1
+$ONMISSION = 0
+0050: gosub @Mission_Cleanup
+end_thread
+return
+
+:Mission_Passed
+00D8: mission_cleanup 
+00BA: show_text_styled GXT 'M_PASSD' time 5000 style 1
+//0109: player $PLAYER_CHAR money += 5000
+0394: play_music 1
+$ONMISSION = 0
+
+0@ = PASSED_MISSIONS
+0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 101@
+if
+    101@ == MISSION_COCAINE
+then
+    0@ = PASSED_MISSIONS
+    1@ = MISSION_EYE4EYE
+    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var PASSED_MISSIONS value MISSION_EYE4EYE
+    0318: set_latest_mission_passed 'M3T1'
+end
+end_thread
+return
+
+{$INCLUDE mission_includes.txt}
+
+hex
+020001
+end

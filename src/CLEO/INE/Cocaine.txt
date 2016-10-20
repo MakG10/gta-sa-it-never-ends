@@ -1,0 +1,618 @@
+{$CLEO .cm}
+{$INCLUDE global_header.txt}
+
+const
+  _LEFT_TRUCK = 21@
+  _WANTED = 22@
+  _Destination_Created = 2@
+  _SPOTTED = 3@
+  _TRUCK = 4@
+  _POLICE1 = 5@
+  _TARGET_TRUCK = 6@
+  _DestinationCheckpoint = 7@
+  _DestinationSphere = 8@
+  _DEALER = 9@
+  _ENEMY1 = 10@
+  _ENEMY2 = 11@
+  _ENEMY3 = 12@
+  _ENEMY_CAR = 13@
+  _ENEMY4 = 14@
+  _ENEMY5 = 15@
+  _EMARKER1 = 16@
+  _EMARKER2 = 17@
+  _EMARKER3 = 18@
+  _EMARKER4 = 19@
+  _EMARKER5 = 20@
+end
+
+:Mission
+thread 'Cocaine'
+$ONMISSION = 1
+03CB: set_rendering_origin_at 1576.063 -1475.0518 14.2247
+
+fade 0 1500
+gosub @Mission_Fading
+
+0335: enable_free_respray 1 
+010D: set_player $PLAYER_CHAR wanted_level_to 0 
+
+04BB: select_interior 0 
+0860: link_actor $PLAYER_ACTOR to_interior 0
+
+
+0050: gosub @Mission_Start 
+if 
+ 0112: wasted_or_busted // mission only 
+then
+ 0050: gosub @Mission_Failed 
+end
+0050: gosub @Mission_Cleanup
+
+$ONMISSION = 0
+end_thread
+
+:Mission_Start
+0@ = INE_BITMASK
+0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var INE_BITMASK value_to 351@
+
+
+fade 1 1500
+Player.CanMove($PLAYER_CHAR) = True
+
+Model.Load(121)  // Da Nang Boys #1
+Model.Load(122)  // Da Nang Boys #2
+Model.Load(123)  // Da Nang Boys #3
+Model.Load(29)  // Dealer
+Model.Load(280)  // Policjant LS
+Model.Load(355)  // AK47
+Model.Load(347)  // Silenced Pistol
+Model.Load(402)  // Buffalo - Enemy Car
+Model.Load(498)  // Boxville - ciezarowka
+04ED: load_animation "MISC"
+038B: load_requested_models
+
+:MissionKokainaCheckModels
+wait 0
+if and
+ Model.Available(121) 
+ Model.Available(122) 
+ Model.Available(123)
+ Model.Available(28)  
+ Model.Available(280)
+ Model.Available(355)
+ Model.Available(402)
+ Model.Available(498) 
+jf @MissionKokainaCheckModels2
+
+:MissionKokainaCheckModels2
+wait 0
+if and
+ Model.Available(347)
+ 04EE:   animation "MISC" loaded
+jf @MissionKokainaCheckModels
+
+0860: link_actor $PLAYER_ACTOR to_interior 0
+select_interior 0
+  
+_LEFT_TRUCK = 0
+_WANTED = 0
+_Destination_Created = 0
+_SPOTTED = 0
+00A1: put_actor $PLAYER_ACTOR at 1576.063 -1475.0518 13.4247
+Actor.Angle($PLAYER_ACTOR) = 90.0
+// 0395: clear_area 1 at 1574.41 -1670.66 5.32031 radius 50.0 50.0 10.0 
+00BA: show_text_styled GXT 'M2T1' time 1000 style 2
+
+00A5: _TRUCK = create_car 498 at 1583.224 -1711.293 5.958711
+0175: set_car _TRUCK Z_angle_to 0.0
+0229: set_car _TRUCK primary_color_to 0 secondary_color_to 0 
+
+009A: _POLICE1 = create_actor_pedtype 6 model 280 at 1596.57 -1636.01 13.2922
+05D4: AS_actor _POLICE1 rotate_angle 0.0 
+0605: actor _POLICE1 perform_animation_sequence "PLYRLEAN_LOOP" from_file "MISC" 4.0 loop 1 0 0 0 -1 ms
+//05C8: AS_actor $POLICE1 look_around 
+
+0186: _TARGET_TRUCK = create_marker_above_car _TRUCK
+07E0: set_marker _TARGET_TRUCK type_to 1 
+
+
+
+ 00BC: show_text_highpriority GXT 'M2I1' time 5000 flag 1
+
+
+
+:MissionKokaina_1
+
+:MissionKokaina_2
+
+:MissionKokaina_3
+wait 0
+if
+ 0119:   car _TRUCK wrecked 
+jf @MissionKokaina_Spotted
+
+gosub @Mission_Failed
+return
+
+:MissionKokaina_Spotted
+wait 0
+if
+ 0364:   actor _POLICE1 spotted_actor $PLAYER_ACTOR
+jf @MissionKokaina_4
+
+if
+ _SPOTTED == 0
+then
+ _SPOTTED = 1
+ 32@ = 0
+ 05E2: AS_actor _POLICE1 kill_actor $PLAYER_ACTOR
+else
+ if and
+  32@ > 5000
+  8118:   not actor _POLICE1 dead 
+ then
+  010D: set_player $PLAYER_CHAR wanted_level_to 3
+ end 
+end
+  
+:MissionKokaina_4
+wait 0
+if
+ 00DB:   actor $PLAYER_ACTOR in_car _TRUCK
+jf @MissionKokaina_1
+
+:MissionKokaina_5
+010D: set_player $PLAYER_CHAR wanted_level_to 3
+_WANTED = 1
+
+
+:MissionKokaina_6
+0164: disable_marker _TARGET_TRUCK 
+
+:MissionKokaina_7
+wait 0
+if
+ 0119:   car _TRUCK wrecked 
+jf @MissionKokaina_8
+
+gosub @Mission_Failed
+return
+
+
+:MissionKokaina_8
+if
+ 80DB:   not actor $PLAYER_ACTOR in_car _TRUCK 
+then
+ 00BC: show_text_highpriority GXT 'M2I3' time 3000 flag 1 // Wejdz do ~r~ciezar�wki~s~.
+ if
+  _Destination_Created == 1
+ then
+  0164: disable_marker _DestinationCheckpoint 
+  03BD: destroy_sphere _DestinationSphere 
+  _Destination_Created = 0
+ end
+ 
+ if
+  _LEFT_TRUCK == 0
+ then
+  0186: _TARGET_TRUCK = create_marker_above_car _TRUCK
+  07E0: set_marker _TARGET_TRUCK type_to 1 
+ end
+ 
+ _LEFT_TRUCK = 1
+else
+ _LEFT_TRUCK = 0
+ 0164: disable_marker _TARGET_TRUCK 
+end
+jump @MissionKokaina_9
+
+
+:MissionKokaina_9
+wait 0
+if
+ 810F:   not player $PLAYER_CHAR wanted_level > 0
+jf @MissionKokaina_10
+
+jump @MissionKokaina_11
+
+:MissionKokaina_10
+if
+ _Destination_Created == 1
+then
+ 0164: disable_marker _DestinationCheckpoint 
+ 03BD: destroy_sphere _DestinationSphere 
+ _Destination_Created = 0
+end
+
+ if
+  _LEFT_TRUCK == 0
+ then
+  00BC: show_text_highpriority GXT 'M2I2' time 5000 flag 1 // ~s~Musisz zgubic poscig.
+ end
+jump @MissionKokaina_7
+
+:MissionKokaina_11
+_WANTED = 0
+if
+ _LEFT_TRUCK == 1
+then 
+ jump @MissionKokaina_7
+end
+
+if
+ _Destination_Created == 0
+then
+ 018A: _DestinationCheckpoint = create_checkpoint_at 2644.85 -2033.28 12.8875
+ 03BC: _DestinationSphere = create_sphere_at 2644.85 -2033.28 12.8875 radius 3.0
+ _Destination_Created = 1
+end
+
+:MissionKokaina_12
+00BC: show_text_highpriority GXT 'M2I4' time 3000 flag 1 // ~s~Jedz do ~y~garazu~s~.
+
+
+:MissionKokaina_arrived
+wait 0
+if
+ 00EE:   actor $PLAYER_ACTOR 0 near_point 2644.85 -2033.28 12.8875 radius 3.0 3.0 3.0 in_car
+jf @MissionKokaina_7
+
+
+Player.CanMove($PLAYER_CHAR) = False
+0164: disable_marker _DestinationCheckpoint
+03BD: destroy_sphere _DestinationSphere 
+
+fade 0 500
+gosub @Mission_Fading
+02A3: enable_widescreen 1 
+
+{01EB: set_traffic_density_multiplier_to 0.0 
+03DE: set_pedestrians_density_multiplier_to 0.0} 
+
+0395: clear_area 1 at 2644.85 -2033.28 12.8875 radius 100.0
+
+
+00AB: put_car _TRUCK at 2644.85 -2033.28 12.8875
+0175: set_car _TRUCK Z_angle_to 180.0 
+
+009A: _DEALER = create_actor_pedtype 17 model 29 at 2654.58 -2039.43 13.2875 
+0639: AS_actor _DEALER rotate_to_actor $PLAYER_ACTOR 
+
+009A: _ENEMY1 = create_actor_pedtype 11 model 122 at 2646.88 -2039.83 21.3875 
+0639: AS_actor _ENEMY1 rotate_to_actor $PLAYER_ACTOR 
+01B2: give_actor _ENEMY1 weapon 30 ammo 300
+01B9: set_actor _ENEMY1 armed_weapon_to 30
+02E2: set_actor _ENEMY1 weapon_accuracy_to 75 
+//0575: set_actor $ENEMY1 pinned_position 1 
+0350: set_actor _ENEMY1 maintain_position_when_attacked 1 
+
+009A: _ENEMY2 = create_actor_pedtype 11 model 123 at 2644.88 -2039.83 21.6875 
+0639: AS_actor _ENEMY2 rotate_to_actor $PLAYER_ACTOR 
+01B2: give_actor _ENEMY2 weapon 30 ammo 300
+01B9: set_actor _ENEMY2 armed_weapon_to 30
+02E2: set_actor _ENEMY2 weapon_accuracy_to 75 
+//0575: set_actor $ENEMY2 pinned_position 1
+0350: set_actor _ENEMY2 maintain_position_when_attacked 1 
+
+009A: _ENEMY3 = create_actor_pedtype 11 model 123 at 2662.38 -2032.43 13.3875 
+0639: AS_actor _ENEMY3 rotate_to_actor $PLAYER_ACTOR
+01B2: give_actor _ENEMY3 weapon 30 ammo 300
+01B9: set_actor _ENEMY3 armed_weapon_to 30
+02E2: set_actor _ENEMY3 weapon_accuracy_to 100 
+
+00A5: _ENEMY_CAR = create_car 402 at 2692.38 -2004.23 13.3875 
+0129: _ENEMY4 = create_actor_pedtype 11 model 123 in_car _ENEMY_CAR driverseat 
+01C8: _ENEMY5 = create_actor_pedtype 11 model 121 in_car _ENEMY_CAR passenger_seat 0  
+01B2: give_actor _ENEMY4 weapon 30 ammo 300
+01B2: give_actor _ENEMY5 weapon 30 ammo 300
+01B9: set_actor _ENEMY4 armed_weapon_to 30
+01B9: set_actor _ENEMY5 armed_weapon_to 30
+02E2: set_actor _ENEMY4 weapon_accuracy_to 75 
+02E2: set_actor _ENEMY5 weapon_accuracy_to 75 
+
+060A: create_decision_maker_type 0 store_to 91@
+07BC: set_actor _ENEMY1 decision_maker_to 91@ 
+07BC: set_actor _ENEMY2 decision_maker_to 91@ 
+07BC: set_actor _ENEMY3 decision_maker_to 91@ 
+07BC: set_actor _ENEMY4 decision_maker_to 91@ 
+07BC: set_actor _ENEMY5 decision_maker_to 91@ 
+
+Camera.SetPosition(2647.88, -2025.33, 13.0875, 0.0, 0.0, 0.0)
+Camera.OnPed(_DEALER,15,2)
+
+wait 1000
+fade 1 500
+gosub @Mission_Fading
+05D3: AS_actor _DEALER goto_point 2649.88 -2031.43 12.7875 mode 4 10000 ms
+wait 500
+05CD: AS_actor $PLAYER_ACTOR exit_car _TRUCK
+0639: AS_actor $PLAYER_ACTOR rotate_to_actor _DEALER
+05BF: AS_actor $PLAYER_ACTOR look_at_actor _DEALER 10000 ms 
+
+
+:MissionKokaina_13
+wait 0
+if
+ 00ED:   actor _DEALER 0 near_point 2649.98 -2031.43 12.7875 radius 1.5 1.5 1.5 on_foot 
+jf @MissionKokaina_13
+
+0639: AS_actor _DEALER rotate_to_actor $PLAYER_ACTOR 
+0639: AS_actor $PLAYER_ACTOR rotate_to_actor _DEALER
+00A7: car _ENEMY_CAR drive_to 2643.38 -2014.13 13.3875 
+
+0605: actor _DEALER perform_animation_sequence "Idle_Chat_02" IFP_file "MISC" 4.0 loop 1 0 0 0 time 3000 // versionA 
+05BA: AS_actor _DEALER move_mouth 3000 ms 
+
+00BC: show_text_highpriority GXT 'M2T2' time 3000 flag 1 
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\dealer\m2t2.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor _DEALER
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\dealer\m2t2.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+
+wait 2400
+0AAE: release_audiostream 311@
+
+00BC: show_text_highpriority GXT 'M2T3' time 1000 flag 1 
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\cj\m2t3.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor $PLAYER_ACTOR
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\cj\m2t3.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 500
+
+05D4: AS_actor _DEALER rotate_angle 0.0 
+
+:MissionKokaina_14
+wait 0
+if
+ 01AE:   car _ENEMY_CAR sphere 0 near_point 2643.38 -2014.13 13.3875 radius 2.0 2.0 2.0 stopped 
+jf @MissionKokaina_14
+0AAE: release_audiostream 311@
+
+Camera.SetPosition(2650.58, -2030.23, 13.0875, 0.0, 0.0, 0.0)
+Camera.OnPed(_DEALER,15,2)
+
+0635: AS_actor _ENEMY1 aim_at_actor $PLAYER_ACTOR 15000 ms 
+0635: AS_actor _ENEMY2 aim_at_actor $PLAYER_ACTOR 15000 ms 
+0635: AS_actor _ENEMY3 aim_at_actor _DEALER 15000 ms 
+
+05BA: AS_actor _DEALER move_mouth 2000 ms 
+00BC: show_text_highpriority GXT 'M2T4' time 2000 flag 1 
+if
+    08B7:   test 351@ bit VOICES_BIT
+then
+    if
+        08B7:   test 351@ bit SURROUND_VOICE_BIT
+    then
+        0AC1: 311@ = load_audiostream_with_3d_support "CLEO\INE\audio\dealer\m2t4.mp3"
+        0AC4: link_3d_audiostream 311@ to_actor _DEALER
+    else
+        0AAC: 311@ = load_audiostream "CLEO\INE\audio\dealer\m2t4.mp3"
+    end
+    0AAD: set_audiostream 311@ perform_action 1
+end
+wait 1400
+0AAE: release_audiostream 311@
+
+Camera.OnPed(_ENEMY4,15,1)
+05CD: AS_actor _ENEMY4 exit_car _ENEMY_CAR 
+05CD: AS_actor _ENEMY5 exit_car _ENEMY_CAR 
+
+:MissionKokaina_15
+wait 0
+if and
+ 044B:   actor _ENEMY4 on_foot 
+ 044B:   actor _ENEMY5 on_foot 
+jf @MissionKokaina_15
+
+0639: AS_actor _ENEMY4 rotate_to_actor $PLAYER_ACTOR
+0639: AS_actor _ENEMY5 rotate_to_actor $PLAYER_ACTOR
+wait 500
+
+Camera.OnPed(_ENEMY1,15,1)
+wait 2000
+Camera.OnPed(_ENEMY3,15,1)
+wait 2000
+05E2: AS_actor _ENEMY3 kill_actor _DEALER
+wait 500
+Camera.OnPed(_DEALER,15,1)
+
+0639: AS_actor $PLAYER_ACTOR rotate_to_actor _ENEMY3
+
+:MissionKokaina_16
+wait 0
+if
+ 0118:   actor _DEALER dead 
+jf @MissionKokaina_16
+
+0575: set_actor _ENEMY1 pinned_position 1 
+0575: set_actor _ENEMY2 pinned_position 1
+
+0187: _EMARKER1 = create_marker_above_actor _ENEMY1 
+0187: _EMARKER2 = create_marker_above_actor _ENEMY2 
+0187: _EMARKER3 = create_marker_above_actor _ENEMY3 
+0187: _EMARKER4 = create_marker_above_actor _ENEMY4 
+0187: _EMARKER5 = create_marker_above_actor _ENEMY5 
+
+05E2: AS_actor _ENEMY1 kill_actor $PLAYER_ACTOR
+05E2: AS_actor _ENEMY2 kill_actor $PLAYER_ACTOR
+05E2: AS_actor _ENEMY3 kill_actor $PLAYER_ACTOR
+05E2: AS_actor _ENEMY4 kill_actor $PLAYER_ACTOR
+05E2: AS_actor _ENEMY5 kill_actor $PLAYER_ACTOR
+
+02A3: enable_widescreen 0 
+Player.CanMove($PLAYER_CHAR) = True
+015A: restore_camera 
+
+00BC: show_text_highpriority GXT 'M2I5' time 5000 flag 1
+
+015D: set_gamespeed 0.5
+wait 500
+015D: set_gamespeed 1.0
+
+:MissionKokaina_19
+wait 0
+if
+ 0119:   car _TRUCK wrecked 
+jf @MissionKokaina_20
+
+gosub @Mission_Failed
+return
+
+:MissionKokaina_20
+wait 0
+if
+ 0118:   actor _ENEMY1 dead 
+jf @MissionKokaina_21
+
+0164: disable_marker _EMARKER1 
+
+:MissionKokaina_21
+wait 0
+if
+ 0118:   actor _ENEMY2 dead 
+jf @MissionKokaina_22
+
+0164: disable_marker _EMARKER2 
+
+:MissionKokaina_22
+wait 0
+if
+ 0118:   actor _ENEMY3 dead 
+jf @MissionKokaina_23
+
+0164: disable_marker _EMARKER3 
+
+:MissionKokaina_23
+wait 0
+if
+ 0118:   actor _ENEMY4 dead 
+jf @MissionKokaina_24
+
+0164: disable_marker _EMARKER4 
+
+:MissionKokaina_24
+wait 0
+if
+ 0118:   actor _ENEMY5 dead 
+jf @MissionKokaina_25
+
+0164: disable_marker _EMARKER5 
+
+:MissionKokaina_25
+wait 0
+if and
+ 0118:   actor _ENEMY1 dead 
+ 0118:   actor _ENEMY2 dead 
+ 0118:   actor _ENEMY3 dead 
+ 0118:   actor _ENEMY4 dead 
+ 0118:   actor _ENEMY5 dead 
+jf @MissionKokaina_19
+
+0164: disable_marker _EMARKER1
+0164: disable_marker _EMARKER2
+0164: disable_marker _EMARKER3
+0164: disable_marker _EMARKER4
+0164: disable_marker _EMARKER5 
+
+{01EB: set_traffic_density_multiplier_to 1.0 
+03DE: set_pedestrians_density_multiplier_to 1.0} 
+
+gosub @Mission_Passed
+return
+
+
+
+
+:MissionKokainaFading
+wait 0
+if
+ 816B:   not fading 
+jf @MissionKokainaFading
+return
+
+:Mission_Fading
+wait 0
+if
+ 816B:   not fading 
+jf @Mission_Fading
+return
+
+:Mission_CameraManipulated
+wait 0
+if
+ 0933:   camera_position_manipulated
+then
+ jump @Mission_CameraManipulated
+else
+ return
+end
+
+:Mission_Cleanup
+0164: disable_marker _DestinationCheckpoint
+03BD: destroy_sphere _DestinationSphere 
+00D8: mission_cleanup 
+0335: enable_free_respray 0
+
+if
+    075C:   marker _TARGET_TRUCK enabled
+then
+    0164: disable_marker _TARGET_TRUCK
+end
+
+01EB: set_traffic_density_multiplier_to 1.0 
+03DE: set_pedestrians_density_multiplier_to 1.0 
+return
+
+:Mission_Failed
+00BA: show_text_styled GXT 'M_FAIL' time 5000 style 1
+$ONMISSION = 0
+0050: gosub @Mission_Cleanup
+end_thread
+return
+
+:Mission_Passed
+gosub @Mission_Cleanup
+01E3: show_text_1number_styled GXT 'M_PASS' number 5000 time 5000 style 1
+0109: player $PLAYER_CHAR money += 5000
+0394: play_music 1
+$ONMISSION = 0
+
+0@ = PASSED_MISSIONS
+0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 101@
+if
+    101@ == MISSION_HOSTAGE
+then
+    0@ = PASSED_MISSIONS
+    1@ = MISSION_COCAINE
+    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var PASSED_MISSIONS value MISSION_COCAINE
+    0318: set_latest_mission_passed 'M2T1'
+end
+end_thread
+return
+
+{$INCLUDE mission_includes.txt}
+
+:END
+end_thread 
+
+hex
+020001
+end

@@ -1,0 +1,420 @@
+#  GTA SA: It Never Ends
+#  http://www.gta-mods.pl/
+
+M1T1 Hostage
+M1T2 Hey, Sweet! Where are you man?
+M1T3 Sweet!
+M1T4 Oh, shit, my head...
+M1T5 Wake up.
+M1T6 I said, wake up!
+M1T7 Hello, Carl.
+M1T8 What the fuck is going on here? What did you do to my brother?
+M1T9 Nothing, YET. He'll be fine, as long as you do everything I tell you to.
+M1T10 What do you want from us?
+M1T11 You mean, what do I want from YOU. I don't want anything from Sweet.
+M1T12 So what the fuck do you want from me?!
+M1T13 I want you to do a few jobs for us. If you do them well, we will let Sweet go.
+M1T14 What kind of jobs?
+M1T15 Any kind. If I tell you to kill somebody, you kill him.
+M1T16 If I tell you to get something, you go get it.
+M1T17 If I tell you to clean the fucking floor, then you clean the fucking floor! You got it?
+M1T18 Why me?
+M1T19 Oh, come on. Everybody knows who you are. You are a regular killing machine.
+M1T20 And what if I don't want to do that shit for you?
+M1T21 You'll do everything I say, or your brother will die.
+M1T22 We'll also take your money. Just so you don't get any stupid ideas trying to get outta this.
+M1T23 Oh, fuck, man...
+M1T24 We already have the first job for you. The police have seized one of our vans. Along with a large quantity of cocaine.
+M1T25 You are going to get it back.
+M1T26 I'm gonna need my weapons back for this.
+M1T27 Here. This gun will be enough.
+
+M1I1 Go to the ~y~garage~w~.
+
+
+
+M2T1 Cocaine
+M2T2 Hello nigger, you got that shit?
+M2T3 Yeah
+M2T4 What the fuck...
+
+M2I1 Go get the ~b~truck~s~.
+M2I2 Lose the cops.
+M2I3 Get back to the ~b~truck~s~!
+M2I4 Go to the ~y~dealer's place~s~.
+M2I5 Kill ~r~Da Nang Boys~s~!
+
+
+
+M3T1 An eye for an eye
+M3T2 Stop it for fuck sake. There's noone there.
+M3T3 Where the fuck are they?
+M3T4 It doesn't matter, boss can't see you today.
+M3T5 Call him, here's his number: 482-821-084
+M3T6 Now turn around.
+M3T7 What the fuck man?
+M3T8 Turn around.
+M3T9 But...
+M3T10 Turn the fuck around now!
+M3T11 It's me, Carl.
+M3T12 /Carl.
+M3T13 This man of yours is so fucking nervous.
+M3T14 /Yeah, maybe. Anyway, listen. We've got another job for you.
+M3T15 /I just found out what those Da Nang "Motherfuckers" did.
+M3T16 /I want you to...
+M3T17 Hold on, hold on. First, I wanna know what about Sweet.
+M3T18 /What about him? He's here with us.
+M3T19 I wanna see him.
+M3T20 /Don't play games with me, CJ. You'll see your brother after you've done what I'm telling you to do.
+M3T21 /And you'll both be together again back on fucking Grove Street.
+M3T22 /Now, about Da Nang Boys...
+M3T23 /Ah, wait. I almost forgot. Tell my man to check on the money.
+M3T24 /He'll know what to do.
+M3T25 Your boss says...
+M3T26 He's gone.
+M3T27 /A'ight, it doesn't matter. Now back to Da Nang Boys...
+M3T28 /I want you to send them a message. That you do not fuck with Bill Degorio.
+M3T29 /Right about now those motherfuckers should me in Idlewood. Get over there and do your thing.
+M3T30 This is for Degorio!
+M3T31 Motherfucker!
+# M3T32 Don't move or I shoot!
+M3T33 You dead now!
+# M3T34 No! Let's wait for boss, he will decide what to do with him.
+M3T35 Oh, fuck, man...
+
+
+PC1T1 Good job with Da Nang Boys, Carl. Meet my man at 24/7 store near the train station. He'll tell you what to do.
+PC2T1 My man is wating for you in the same place as before. Meet up with him.
+
+M4T1 Heist
+M4T2 Why did you want to meet here?
+M4T3 Because nobody will watch us. Look around. Everyone is busy with shopping.
+M4T4 And what about a camera?
+M4T5 Oh, fuck. I haven't thought of that.
+M4T6 Are you a fucking moron?
+M4T7 Hey, you better watch your fucking mouth, nigger.
+M4T8 Whatever...
+M4T9 Let's move over there. We'll be out of sight.
+M4T10 Hey, get the fuck outta here.
+M4T11 Why?
+M4T12 Because I said so. Now get the fuck out!
+M4T13 Oh yeah? Make me.
+M4T14 You don't wanna fuck with me.
+M4T15 All right, just calm down. I'm on my way.
+M4T16 He will call the cops, you know.
+M4T17 So what? Those lazy bastards never come on time anyway.
+M4T18 All right, listen. We've got a problem.
+M4T19 Some motherfucker stole our money and he wants to get it out of the city.
+M4T20 And obviously, your job is to stop him.
+M4T21 Fine, where is he?
+M4T22 Well, I don't know exactly, but he will use the truck to transport the money.
+M4T23 So he will use the highway.
+M4T24 That's right.
+M4T25 All right, you gotta get moving. Time is running out.
+M4T26 Call me when you have it.
+M4T27 Oh, fuck this.
+
+M4I1 Go on the ~y~bridge~w~.
+M4I2 Wait for the truck and jump on it in a proper moment.
+M4I3 NOW!
+M4I4 Kick the trailer to make your way inside of it.
+M4I5 Pick up the money bags using F or RETURN key.
+M4I6 Throw the bag out of the trailer using F or RETURN key.
+M4I7 Loose the cops.
+M4I8 Pick up the ~g~bags~w~.
+
+M4T28 I've got the money. What now?
+M4T29 All right, hide them in the parking lot near the highway.
+
+
+
+M5T1 Blow it up
+M5T2 You need to steal one car and... let's say, surprise Da Nang Boys.
+M5T3 First, I wanna talk to my brother.
+M5T4 No more fucking talks, until you finish this job.
+M5T5 Call him now! I wanna know if he is still alive.
+M5T6 Otherwise, I won't do any fucking more jobs for you!
+M5T7 All right, just calm the fuck down. I'll give them a call. You got a few seconds and that's it.
+M5T8 Put that fucking nigger on the phone. What fucking difference does it make? Just put him on the fucking phone for fuck sake.
+M5T9 Sweet? Are you all right?
+M5T10 Fucking nigger, I should kill him right now.
+M5T11 Okay, it will be over soon. It should be the last job.
+M5T12 All right, time's up. Give me the fucking phone.
+M5T13 So what do I do?
+M5T14 Well, basically, you need to steal one car and blow up Da Nang Boys.
+M5T15 Some guy is testing a new car for his friend's chick.
+M5T16 It's a pink Buffalo, so you won't fucking miss it.
+M5T17 Once you find that car, kill the driver and go to the 8-ball, he will plant the explosives.
+M5T18 Once the car is ready, go return it to Da Nang Boys, they should be near the railways
+M5T19 Blow the car up in the right moment and kill the ones who will survive.
+M5T20 
+M5T21 
+M5T22 That's the hell of a fucking job...
+M5T23 Shut the fuck up and get to work. Come back here when it's done.
+
+M5T24 I've got a car for your girl.
+M5T25 Is it good?
+M5T26 Yeah, it's good.
+M5T27 A'ight, thanks.
+
+M5T28 Well, well, well. Look who we have here.
+M5T29 Isn't that a Bill's boy?
+M5T30 Will you say something, motherfucker?
+
+M5I1 Find a pink Buffalo in Willefield district.
+M5I2 Kill ~r~the driver~w~!
+M5I3 Go to ~y~8-ball~w~ to plant the explosives.
+M5I4 Go to ~y~Da Nang Boys' meeting point~w~.
+M5I5 Move back.
+M5I6 Kill the rest of ~r~Da Nang Boys~w~.
+M5I7 Lose the cops.
+M5I8 Return to ~y~the parking~w~.
+M5I9 Leave the area.
+M5I10 Get into the ~b~car~w~.
+
+
+
+PC3T1 You stupid motherfucker! You're fucking useless, Carl! My man died cause of you!
+PC3T2 It wasn't my...
+PC3T3 Shut the fuck up, you useless piece of shit!
+PC3T4 And you know what? Say goodbye to your fucking brother.
+PC3T5 No, wait, wait. Bill! Bill!
+PC3T6 FUCK, FUCK!
+PC3T7 CJ, man. I need help fucking right now!
+PC3T8 I escaped. They were gonna fucking kill me, man.
+PC3T9 Where are you?
+PC3T10 I'm near that garage under the highway. Hurry the fuck up!
+
+
+
+M6T1 Rescue
+M6T2 Come on Sweet, where are you?
+M6T3 Come on, man, go, go, go! They're after us.
+M6T4 We can lose them in the tunnels.
+M6T5 Grab the wheel, Sweet!
+M6T6 We've got to jump off.
+M6T7 There is no fucking...
+M6T8 NOW!
+M6T9 Jump into the water, CJ!
+M6T10 We made it, man. We made it.
+M6T11 Yeah.
+M6T12 All right, let's go home, CJ.
+M6T13 We can't go home. They will find us there.
+M6T14 So what the fuck are we gonna do now?
+M6T15 I know one hotel in downtown. We'll go there and then we'll think of something.
+M6T16 A'ight, man.
+
+M6I1 You need a car with at least 2 seats.
+M6I2 Follow ~b~Sweet~w~ to the water.
+M6I3 Try to loose them in ~y~the tunnel~w~.
+
+M6F1 Sweet died!
+
+
+
+M7T1 Hotel
+M7T2 Sweet, we need to get outta here!
+M7T3 Woozie? I need a fucking helicopter now!
+M7T4 Where?
+M7T5 Hotel in downtown, Los Santos.
+M7T6 I've got my man nearby. He'll be there soon.
+M7T7 Sweet, the helicopter is on the way here. We need to hold them off.
+M7T8 Get into the chopper or you're dead, man!
+M7T9 What do you need him for?
+M7T10 To find Bill Degorio.
+M7T11 Where is he, you motherfucker?
+M7T12 Fuck you!
+M7T13 *gun shots* Argh, fuck!
+M7T14 Where is Bill Degorio?!
+M7T15 He's going to pick up some stuff from that garage.
+M7T16 The one where Sweet was being held?
+M7T17 Yeah.
+M7T18 No, don't do this!
+M7T19 Looks like we've got a company.
+M7T20 Get a little bit lower. I need to hold them off.
+M7T21 All right, that's it. Can you take us to the Ganton?
+M7T22 Sure.
+M7T23 All right, thanks for the ride. You saved us.
+M7T24 See you around.
+M7T25 See ya.
+M7T26 So now what?
+M7T27 We're gonna end this for good.
+M7T28 A'ight man. Come over to my place when you're ready.
+
+M7I1 SWEET
+M7I2 Wait for the helicopter to land.
+M7I3 Kill only one of them. Take the other one as a hostage.
+M7I4 Aim at the hostage.
+M7I5 Get into the ~b~helicopter~w~.
+M7I6 Destroy the ~r~cars~w~.
+
+M7F1 Sweet is dead!
+M7F2 You were suppose to kill only one of them!
+
+
+
+
+M8T1 Finish Him!
+M8T2 You're ready?
+M8T3 Yeah, I'm ready.
+M8T4 Let's go then, I already talked to homies.
+M8T5 All right people, let's do this!
+M8T6 I hope they'll be fine.
+M8T7 Drop the gun!
+M8T8 Back the fuck off, or I will kill your brother.
+M8T9 Put your weapons down, now!
+M8T10 Fuck man, police is all over the place.
+M8T11 Let's take their clothes, so we can get the fuck outta here.
+M8T12 What the fuck happened?
+M8T13 Some fucking maniacs are shooting at eachother.
+M8T14 How many?
+M8T15 I don't know, maybe three.
+M8T16 All right, go to the unit 4, they will take you to the hospital.
+M8T17 We can't just leave our homies.
+M8T18 We ain't leaving them. We're gonna get them back.
+M8T19 We're gonna get them back.
+
+M8F1 Sweet is dead!
+
+M8I1 Go to ~y~the garage~w~.
+M8I2 Kill them all!
+M8I4 Go inside of the garage.
+M8I5 Find Bill Degorio and kill him.
+M8I6 Kill Bill Degorio.
+M8I7 Take SWAT officer's clothes.
+M8I8 Get out of the garage.
+M8I9 Get into ~b~the car~w~.
+M8I10 Go back on ~y~Grove Street~w~.
+M8I11 Go to the ~y~Bill Degorio's garage~w~.
+M8I12 Kill SWAT officers.
+M8I13 Wait for ~b~Sweet~w~.
+
+
+
+INE_m It Never Ends
+INE_m0 Options
+INE_m1 Missions
+INE_m2 Unique Jumps
+INE_m3 Credits
+INE_m4 Extra Missions
+
+INE_m01 Voices
+INE_m02 Surround sound
+INE_m03 Cover System
+INE_m04 Autosaves
+
+INE_d01 Enable or disable character voices in the game.
+INE_d02 Enable or disable surround sound in characters' voices. It may resolve issues with low sound.
+INE_d03 Enable or disable cover system.
+INE_d04 Enable or disable autosaves for INE missions.
+
+INE_m00 You can access this menu anytime in the game by typing "~y~ine~b~menu~w~"
+INE_m41 Visit "www.gta-mods.pl/ine-extras" to download extra missions.
+
+INE_st Status
+INE_on On
+INE_off Off
+
+ME1T1 The Kidnapping
+ME2T1 Da Nang Fags
+ME3T1 Take It Back
+
+INE_0 ~1~
+
+TUT1 Go to the marked point.
+TUT2 Rotate face to the wall.
+TUT3 Press Q to active or deactivate Cover mode.
+TUT4 Move left or right to change the direction.
+TUT5 Hold AIM button to put out of the cover.
+TUT6 Kill the target.
+TUT7 Get back behind the cover (stop holding AIM)
+TUT8 Now press the crouch button (~k~~PED_DUCK~) to roll over in the current direction.
+TUT9 Tutorial Passed
+
+TIP5 Press ~k~~VEHICLE_ENTER_EXIT~ to get into the car.
+
+INEH1 Do you want to keep characters' voices on? (~k~~CONVERSATION_YES~ - Yes, ~k~~CONVERSATION_NO~ - No)
+INEH2 Do you want to enable surround sound in characters' voices? (may not work correctly for everyone). ~k~~CONVERSATION_YES~ - Yes, ~k~~CONVERSATION_NO~ - No
+INEH3 There are 8 new Unique Jumps with random events. You can check their locations in the MENU next to the CJ's house.
+INEH4 "It Never Ends" also adds the Cover System. Do you want to go through the tutorial? (~k~~CONVERSATION_YES~ - Yes, ~k~~CONVERSATION_NO~ - No)
+INEH5 From now on, there are 8 money bags to collect. You can check their locations in the game map (dollar icon).
+INEH6 You can download more mods at http://www.gta-mods.pl/
+INEH7 You can repeat any mission you want from this Mission Pack using the menu next to the CJ's house.
+INEH8 Do you want to enable autosaves for INE missions? (~k~~CONVERSATION_YES~ - Yes, ~k~~CONVERSATION_NO~ - No)
+
+INE_BAG Money Bag Collected
+INE_BAGS All Money Bags Collected
+
+CRED000 GTA Mods ZONE (http://www.gta-mods.pl)
+CRED001 Leader Of Modification
+CRED002 MakG
+CRED003 Scenario & Dialogues
+CRED004 MakG
+CRED005 Mission Scripting
+CRED006 MakG (7 missions)
+CRED007 LotNICK (1 mission)
+CRED008 Unique Jumps
+CRED009 MakG
+CRD009A Cover System
+CRD009B MakG
+CRD009C  
+CRD009D  
+CRED019 Money Bags To Collect
+CRED020 MakG, Silent
+CRED010  
+CRED011  
+CRED012 Main Characters' Voices
+CRED013 Carl 'CJ' Johnson - Kuba Waliczek
+CRED014 Sweet - CaptainFalcon
+CRED015 Bill Degorio - CaptainFalcon
+CRED016 Side Characters' Voices
+CRED017 Dealer - krolikk
+CRED018 Bill's man - MakG
+CRED028  
+CRED029 Customer - Frixion
+CRED030  
+CRED031 Woozie - Silent
+CRED032  
+CRED033  
+CRED034 FBI agent - MakG
+CRED035  
+CRED036  
+CRED047  
+CRED048  
+CRED049 Graphics
+CRED050 MakG
+CRED051 Przemysław Lament 'primo'
+CRED052  
+CRED053  Website
+CRED054  http://www.gta-mods.pl/
+CRED055  Special Thanks
+CRED056  Silent
+CRED057  Rosman
+CRED060  
+CRED021  
+CRED022  
+CRED023  
+CRED024  
+CRED025  
+CRED026  
+CRED027  
+CRED069  
+CRED070  
+CRED071  
+CRED072  
+CRED073  
+CRED074  
+CRED075  
+CRED076  
+
+
+CRED058  
+CRED059  
+CRED061  
+CRED062  
+CRED063  
+CRED064  
+CRED065  
+CRED066  
+CRED067  
+CRED068  

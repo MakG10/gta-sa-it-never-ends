@@ -1,0 +1,110 @@
+:REQUEST__GlobalVarRead
+0AAA: 2@ = thread 'INEMAIN' pointer
+if
+    0019:   2@ > 0
+then
+    000A: 2@ += 0x3C
+    0012: 0@ *= 4
+    005A: 2@ += 0@  // (int)
+    0A8D: 1@ = read_memory 2@ size 4 virtual_protect 0
+else
+    0006: 1@ = -1
+end
+0AB2: ret 1 1@
+
+:REQUEST__GlobalVarWrite
+0AAA: 2@ = thread 'INEMAIN' pointer
+if
+    0019:   2@ > 0
+then
+    000A: 2@ += 0x3C
+    0012: 0@ *= 4
+    005A: 2@ += 0@  // (int)
+    0A8C: write_memory 2@ size 4 value 1@ virtual_protect 0
+end
+0AB2: ret 0
+
+
+{:REQUEST__GlobalVarRead
+0AAA: 1@ = thread 'INEMAIN' pointer
+if
+    0019:   1@ > 0
+then
+    000A: 1@ += 0x3C    // 0@
+    0A8C: write_memory 1@ size 4 value 0@ virtual_protect 0
+    0006: 2@ = 0
+    
+    while true
+        if
+            8039:   not 2@ == -1
+        jf break
+        0001: wait 0 ms
+        0A8D: 2@ = read_memory 1@ size 4 virtual_protect 0
+    end
+    
+    000A: 1@ += 0x4     // 1@
+    0A8D: 3@ = read_memory 1@ size 4 virtual_protect 0  
+    {if
+        0A9A: 4@ = openfile "cleo\INE\debug\ine.log" mode "at+"  // IF and SET
+    then
+        0AD9: write_formatted_text "Read value %d from 0x%X%c%c" in_file 4@ 3@ 1@ 0xD 0xA
+        0A9B: closefile 4@
+    end
+end
+0AB2: ret 1 3@
+
+:REQUEST__GlobalVarWrite
+0AAA: 2@ = thread 'INEMAIN' pointer
+if
+    0019:   2@ > 0
+then
+    000A: 2@ += 0x44    // 2@
+    0A8C: write_memory 2@ size 4 value 0@ virtual_protect 0
+    000A: 2@ += 0x4     // 3@
+    0A8C: write_memory 2@ size 4 value 1@ virtual_protect 0
+    {if
+        0A9A: 4@ = openfile "cleo\INE\debug\ine.log" mode "at+"  // IF and SET
+    then
+        0AD9: write_formatted_text "Written %d to 0x%X%c%c" in_file 4@ 1@ 2@ 0xD 0xA
+        0A9B: closefile 4@
+    end
+end
+0AB2: ret 0 }
+
+:LoadCustomPathFromFile{\__(*pathData)__[hFile,_pathID]__}
+0AA7: call_function 0x459FF0 num_params 1 pop 1 1@ 2@
+0012: 2@ *= 0x10
+000A: 2@ += 0x97D884
+0A8D: 3@ = read_memory 2@ size 4 virtual_protect 0
+if
+    8039:   not 3@ == 0
+then
+    0A8E: 4@ = 2@ + 0xB
+    0A8D: 5@ = read_memory 4@ size 1 virtual_protect 0
+    if 0039:   5@ == 1
+    then 0AC9: free_allocated_memory 3@
+    else 0873: release_path 1@
+    end
+    0A8C: write_memory 2@ size 8 value 0 virtual_protect 0
+end
+0A9C: 4@ = file 0@ size
+0AC8: 3@ = allocate_memory_size 4@
+0AC7: 5@ = var 5@ offset
+0A8F: 5@ = 3@ - 5@
+0016: 5@ /= 4
+0A9D: readfile 0@ size 4@ to 5@(5@,1i)
+0A8C: write_memory 2@ size 4 value 3@ virtual_protect 0
+0A8E: 5@ = 3@ + 0x20
+while true
+    0A8D: 6@ = read_memory 5@ size 4 virtual_protect 0
+    8039:   not 6@ == 0
+    jf break
+    000A: 5@ += 0x20
+end
+0062: 5@ -= 3@
+000A: 2@ += 0x4
+0A8C: write_memory 2@ size 4 value 5@ virtual_protect 0
+000A: 2@ += 0x7
+0A8C: write_memory 2@ size 1 value 1 virtual_protect 0
+0AB2: ret 1 3@
+    

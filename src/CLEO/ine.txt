@@ -1,0 +1,2812 @@
+{$CLEO}
+{$INCLUDE INE\global_header.txt}
+
+03A4: name_thread 'INEMAIN'
+0A95: enable_thread_saving
+
+
+while true
+    0001: wait 250 ms
+    0AC6: 33@ = label @LaunchedFirstTimeFlag offset
+    0A8D: 33@ = read_memory 33@ size 1 virtual_protect 0
+    if
+        0039:   33@ == 0
+    then
+        0AB1: call_scm_func @CreateThread 1 @MissionStarter
+        0AB1: call_scm_func @CreateThread 1 @MENU
+        0AB1: call_scm_func @CreateThread 1 @Unique_Jumps
+        0AB1: call_scm_func @CreateThread 1 @Cover_System
+        0AB1: call_scm_func @CreateThread 1 @MoneyBags
+        0AC6: 33@ = label @LaunchedFirstTimeFlag offset
+        0A8C: write_memory 33@ size 1 value 1 virtual_protect 0
+    end
+
+    {
+        0@ - INE_BITMASK
+        1@ - MISSION_MARKER
+        2@ - PASSED_MISSIONS
+            0 - // Nic
+            1 - // Misja #1 (Intro) - "Hostage" aka "Zakladnik"
+            2 - // Misja #2 - "Cocaine" aka "Kokaina"
+            3 - // Misja #3 - "Eye for an eye" aka "Oko za oko"
+            4 - // Misja #4 - "Jump on it" aka "Skok"
+            5 - // Misja #5 - "Blow it up" aka "Wysadz ich"
+            6 - // Misja #6 - "Rescue" aka "Ratunek"
+            7 - // Misja #7 - "Hotel" aka "Hotel"
+            8 - // Misja #8 - "Finish him" aka "Wykoncz go"
+
+    }
+
+    {if
+        8039:   not 0@ == -1
+    then
+        0085: 1@ = 29@(0@,3i) // (int)
+        0AC7: 10@ = var 29@(0@,3i) offset
+        if
+            0A9A: 4@ = openfile "cleo\INE\debug\ine.log" mode "at+"  // IF and SET
+        then
+            0AD9: write_formatted_text "Read value %d from 0x%X (index %d)%c%c" in_file 4@ 1@ 10@ 0@ 0xD 0xA
+            0A9B: closefile 4@
+        end
+//        0AB1: call_scm_func @ReadPrivateGlobalVar 1 read_var 0@ value_to 1@
+        0006: 0@ = -1
+    end
+
+    if
+        8039:   not 2@ == -1
+    then
+        0085: 29@(2@,3i) = 3@ // (int)
+        0AC7: 10@ = var 29@(2@,3i) offset
+        if
+            0A9A: 4@ = openfile "cleo\INE\debug\ine.log" mode "at+"  // IF and SET
+        then
+            0AD9: write_formatted_text "Write value %d to 0x%X (index %d)%c%c" in_file 4@ 3@ 10@ 2@ 0xD 0xA
+            0A9B: closefile 4@
+        end
+//        0AB1: call_scm_func @WritePrivateGlobalVar 2 write_var 2@ value 3@
+        0006: 2@ = -1
+    end }
+end
+
+:LaunchedFirstTimeFlag
+hex
+00
+end
+
+
+
+
+
+:CreateThread
+0A9F: 32@ = current_thread_pointer
+000A: 32@ += 0x10
+0A8D: 32@ = read_memory 32@ size 4 virtual_protect 0
+0062: 32@ -= 0@
+0AA7: call_function 0x464C20 num_params 1 pop 1 32@ 33@
+005A: 32@ += 0@
+000A: 33@ += 0x10
+0A8C: write_memory 33@ size 4 value 32@ virtual_protect 0
+000A: 33@ += 0xB9
+0A8C: write_memory 33@ size 1 value 0x0 virtual_protect 0
+{000E: 33@ -= 0x8D
+for 32@ = 0 to 30
+    0A8C: write_memory 33@ size 4 value 1@(32@,30i) virtual_protect 0
+    000A: 33@ += 4
+end}
+0AB2: ret 0
+
+
+
+{$INCLUDE INE\mission_includes.txt}
+
+
+
+
+
+
+
+:MissionStarter
+//alloc($MISSION_MARKER,81)
+//0AB4: 0@ = var 340  // Sprawdzanie, czy skrypt zostal uruchomiony po raz pierwszy.
+0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var INE_BITMASK value_to 0@
+if
+    88B7:   not test 0@ bit FIRST_RUN_BIT
+// 0@ == 1
+then
+    08BD: set 0@ bit FIRST_RUN_BIT
+    08BD: set 0@ bit VOICES_BIT
+//    08C3: clear 0@ bit VOICES_BIT  // Dla czytelno�ci kodu, bo w 100% przypadk�w te bity b�da puste
+//    08C3: clear 0@ bit SURROUND_VOICE_BIT
+    08BD: set 0@ bit COVER_SYSTEM_BIT
+    08BD: set 0@ bit AUTOSAVES_BIT
+
+    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var INE_BITMASK value 0@
+//    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var PASSED_MISSIONS value MISSION_EYE4EYE  // Dla debugowania, ostatnia zaliczona misja
+
+    // Definicje USJ
+    0814: define_unique_jump_start 2505.11 -2206.71 15.7891 radius 3.0 3.0 3.0 land 2451.6687 -2206.3481 13.5835 radius 20.0 20.0 5.0 camera 2453.46 -2207.6716 13.5469 reward 1000
+    0814: define_unique_jump_start 2004.8 -2064.47 16.9672 radius 5.0 5.0 5.0 land 1946.4615 -2067.0535 18.2656 radius 6.0 8.0 5.0 camera 1973.5789 -2066.8782 22.3574 reward 1000
+
+    0814: define_unique_jump_start 1536.316 -1504.2938 18.3364 radius 5.0 5.0 5.0 land 1505.3459 -1505.2246 23.5578 radius 7.0 4.0 3.0 camera 1526.67 -1485.34 22.9547 reward 1000
+    0814: define_unique_jump_start 1637.73 -1561.24 21.5531 radius 5.0 5.0 5.0 land 1726.3226 -1524.9424 18.5021 radius 24.0 24.0 6.0 camera 1695.5947 -1537.0747 32.8453 reward 1000
+
+    0814: define_unique_jump_start 1861.8767 -1480.8792 13.5424 radius 9.0 5.0 5.0 land 1788.7126 -1478.8887 10.6618 radius 20.0 20.0 6.0 camera 1836.4073 -1477.7787 13.5082 reward 1000
+
+    0814: define_unique_jump_start 1867.663 -1864.6982 16.5527 radius 5.0 5.0 5.0 land 1910.1603 -1863.6129 13.5631 radius 14.0 14.0 6.0 camera 1883.0231 -1841.8418 13.5706 reward 1000
+
+    0814: define_unique_jump_start 1913.1343 -1585.8232 31.9718 radius 5.0 5.0 5.0 land 1957.5625 -1584.3053 26.5781 radius 15.0 15.0 1.5 camera 1911.0205 -1586.0066 31.3991 reward 1000
+    0814: define_unique_jump_start 1970.9777 -1585.3307 29.5069 radius 5.0 5.0 5.0 land 2004.4368 -1585.5995 26.5781 radius 20.0 20.0 1.5 camera 1968.6462 -1585.4719 65.3572 reward 1000
+
+{ 0AB3: var 340 = 1
+ 0AB3: var 341 = 1  // Misja #1 (Intro) - "Hostage" aka "Zakladnik"
+ 0AB3: var 342 = 1  // Misja #2 - "Cocaine" aka "Kokaina"
+ 0AB3: var 343 = 1  // Misja #3 - "Eye for an eye" aka "Oko za oko"
+ 0AB3: var 344 = 1  // Misja #4 - "Jump on it" aka "Skok"
+ 0AB3: var 345 = 0  // Misja #5 - "Blow it up" aka "Wysadz ich"
+ 0AB3: var 346 = 0  // Misja #6 - "Rescue" aka "Ratunek"
+ 0AB3: var 347 = 0  // Misja #7 - "Hotel" aka "Hotel"
+ 0AB3: var 348 = 0  // Misja #8 - "Finish him" aka "Wykoncz go"
+
+ 0AB3: var 351 = 0  // Glosy postaci
+ 0AB3: var 352 = 0  // Dzwiek przestrzenny
+ 0AB3: var 353 = 1  // Cover System}
+
+{ // Torby z pieniedzmi
+ 0AB3: var 331 = 0
+ 0AB3: var 332 = 0
+ 0AB3: var 333 = 0
+ 0AB3: var 334 = 0
+ 0AB3: var 335 = 0
+ 0AB3: var 336 = 0
+ 0AB3: var 337 = 0
+ 0AB3: var 338 = 0 }
+end
+// Pozycja markera pod domem Sweeta
+//$SWEET_HOUSE_X = 2515.07
+//$SWEET_HOUSE_Y = -1673.98
+//$SWEET_HOUSE_Z = 12.71
+
+:MAIN
+0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 10@
+
+while true
+    0001: wait 250 ms
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 1@
+    if
+        0256:   player 0 defined
+    then
+        //if
+        //  $RIOT_TOTAL_PASSED_MISSIONS == 5
+        //jf @MAIN
+        if
+            0038:   $ONMISSION == 0
+        then
+            //jump @MAIN_Mission_7
+            //jump @MENU_Listener
+            //jump @MISSIONS
+
+            //:MISSIONS
+
+            //0AB4: 1@ = var 341
+            0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 1@
+
+            // AUTOSAVE
+            if
+                0019:   1@ > 10@
+            then
+                0004: 10@ = 1@
+
+                wait 500
+
+                03D8: show_save_screen
+
+                while true
+                    wait 0
+                    if
+                        03D9:   save_done
+                    then
+                        break
+                    end
+                end
+            end
+
+            if
+                0039:   1@ == MISSION_NOTHING
+            //  1@ == 0
+            then
+                0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MISSION_MARKER value_to 2@
+
+                0006: 11@ = 2515.07
+                0006: 12@ = -1673.98
+                0006: 13@ = 12.71
+
+                if
+                    875C:   not marker 2@ enabled
+                then
+                    02A7: 2@ = create_icon_marker_and_sphere 38 at 11@ 12@ 13@
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MISSION_MARKER value 2@
+                end
+
+                if
+                    00FF:   actor $PLAYER_ACTOR sphere 0 in_sphere 11@ 12@ 13@ radius 1.2 1.2 2.0 on_foot
+                then
+                    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MISSION_MARKER value_to 2@
+                    0164: disable_marker 2@
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MISSION_MARKER value 0
+
+                    0004: $ONMISSION = 1
+                    00BA: show_text_styled GXT "M1T1" time 1000 style 2 // Hostage
+                    gosub @GOTO_SWEETS_HOUSE
+                    0A94: start_custom_mission "INE\Hostage"
+
+                    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 10@
+
+                    // Tutorial
+                    while true
+                        wait 200
+                        if
+                            $ONMISSION == 0
+                        then
+                            0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 1@
+                            if
+                                0039:   1@ == MISSION_HOSTAGE
+                            then
+                                $ONMISSION = 1
+                                01B4: set_player $PLAYER_CHAR can_move 0
+                                015F: set_camera_position 1572.0043 -1471.7932 12.8 rotation 0.0 0.0 0.0
+                                0159: camera_on_ped $PLAYER_ACTOR 15 2
+
+                                0512: show_permanent_text_box "INEH1"
+
+                                while true
+                                    wait 0
+                                    if
+                                        00E1:   player 0 pressed_key 11
+                                    then
+                                        08BD: set 0@ bit VOICES_BIT
+                                        break
+                                    end
+
+                                    if
+                                        00E1:   player 0 pressed_key 10
+                                    then
+                                        08C3: clear 0@ bit VOICES_BIT
+                                        break
+                                    end
+                                end
+
+                                if
+                                    08B7:   test 0@ bit VOICES_BIT
+                                then
+                                    03E6: remove_text_box
+                                    0512: show_permanent_text_box "INEH2"
+
+                                    wait 500
+                                    while true
+                                        wait 0
+                                        if
+                                            00E1:   player 0 pressed_key 11
+                                        then
+                                            08BD: set 0@ bit SURROUND_VOICE_BIT
+                                            break
+                                        end
+
+                                        if
+                                            00E1:   player 0 pressed_key 10
+                                        then
+                                            08C3: clear 0@ bit SURROUND_VOICE_BIT
+                                            break
+                                        end
+                                    end
+                                else
+                                    08C3: clear 0@ bit SURROUND_VOICE_BIT
+                                end
+
+
+                                03E6: remove_text_box
+                                0512: show_permanent_text_box "INEH8"
+
+                                wait 500
+                                while true
+                                    wait 0
+                                    if
+                                        00E1:   player 0 pressed_key 11
+                                    then
+                                        08BD: set 0@ bit AUTOSAVES_BIT
+                                        break
+                                    end
+
+                                    if
+                                        00E1:   player 0 pressed_key 10
+                                    then
+                                        08C3: clear 0@ bit AUTOSAVES_BIT
+                                        break
+                                    end
+                                end
+
+                                0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var INE_BITMASK value 0@
+
+
+                                03E6: remove_text_box
+                                0512: show_permanent_text_box "INEH9"
+
+                                wait 5000
+
+
+                                03E6: remove_text_box
+                                0512: show_permanent_text_box "INEH3"
+                                0160: set_camera_point_at 1540.6687 -1503.2498 15.1934 mode 1
+                                wait 8000
+
+
+                                03E6: remove_text_box
+                                0512: show_permanent_text_box "INEH4"
+
+                                while true
+                                    wait 0
+                                    if
+                                        00E1:   player 0 pressed_key 11
+                                    then
+                                        03E6: remove_text_box
+                                        01B4: set_player $PLAYER_CHAR can_move 1
+                                        0A94: start_custom_mission "INE\Tutorial"
+                                        015A: restore_camera
+                                        wait 1000
+
+                                        while true
+                                            wait 0
+                                            if
+                                                $ONMISSION == 0
+                                            then
+                                                break
+                                            end
+                                        end
+                                        break
+                                    end
+
+                                    if
+                                        00E1:   player 0 pressed_key 10
+                                    then
+                                        03E6: remove_text_box
+                                        01B4: set_player $PLAYER_CHAR can_move 1
+                                        015A: restore_camera
+                                        break
+                                    end
+                                end
+                                $ONMISSION = 0
+                            end
+                            break
+                        end
+                    end
+                end
+            end
+
+
+            if
+                0039:   1@ == MISSION_HOSTAGE
+            then
+                0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MISSION_MARKER value_to 2@
+
+                0006: 11@ = 1576.263
+                0006: 12@ = -1475.0518
+                0006: 13@ = 14.2247
+
+                if
+                    875C:   not marker 2@ enabled
+                then
+                    02A7: 2@ = create_icon_marker_and_sphere 24 at 11@ 12@ 13@
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MISSION_MARKER value 2@
+                end
+
+                if
+                    00FF:   actor $PLAYER_ACTOR sphere 0 in_sphere 11@ 12@ 13@ radius 1.2 1.2 2.0 on_foot
+                then
+                    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MISSION_MARKER value_to 2@
+                    0164: disable_marker 2@
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MISSION_MARKER value 0
+
+                    0004: $ONMISSION = 1
+                    00BA: show_text_styled GXT "M2T1" time 1000 style 2 // Cocaine
+                    0A94: start_custom_mission "INE\Cocaine"
+
+                    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 10@
+                end
+            end
+
+            if
+                0039:   1@ == MISSION_COCAINE
+            then
+                0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MISSION_MARKER value_to 2@
+
+                0006: 11@ = 1576.063
+                0006: 12@ = -1475.0518
+                0006: 13@ = 14.2247
+
+                if
+                    875C:   not marker 2@ enabled
+                then
+                    02A7: 2@ = create_icon_marker_and_sphere 24 at 11@ 12@ 13@
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MISSION_MARKER value 2@
+                end
+
+                if
+                    00FF:   actor $PLAYER_ACTOR sphere 0 in_sphere 11@ 12@ 13@ radius 1.2 1.2 2.0 on_foot
+                then
+                    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MISSION_MARKER value_to 2@
+                    0164: disable_marker 2@
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MISSION_MARKER value 0
+
+                    0004: $ONMISSION = 1
+                    00BA: show_text_styled GXT "M3T1" time 1000 style 2 // Show Time
+                    0A94: start_custom_mission "INE\Eye4Eye"
+
+                    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 10@
+                end
+            end
+
+            if
+                0039:   1@ == MISSION_EYE4EYE
+            then
+                0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var INE_BITMASK value_to 0@
+                if
+                    88B7:   not test 0@ bit CALL1_DONE
+                then
+                    gosub @Phone1
+                    08BD: set 0@ bit CALL1_DONE
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var INE_BITMASK value 0@
+                end
+
+                0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MISSION_MARKER value_to 2@
+
+                0006: 11@ = 1833.5564
+                0006: 12@ = -1843.3431
+                0006: 13@ = 13.5781
+
+                if
+                    875C:   not marker 2@ enabled
+                then
+                    02A7: 2@ = create_icon_marker_and_sphere 24 at 11@ 12@ 13@
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MISSION_MARKER value 2@
+                end
+
+                if
+                    00EC:   actor $PLAYER_ACTOR 0 near_point 11@ 12@ radius 20.0 20.0
+                then
+                    08E7: disable_entrance_markers 1
+                else
+                    08E7: disable_entrance_markers 0
+                end
+
+                if
+                    00FF:   actor $PLAYER_ACTOR sphere 0 in_sphere 11@ 12@ 13@ radius 1.2 1.2 2.0 on_foot
+                then
+                    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MISSION_MARKER value_to 2@
+                    0164: disable_marker 2@
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MISSION_MARKER value 0
+
+                    0004: $ONMISSION = 1
+                    00BA: show_text_styled GXT "M4T1" time 1000 style 2 // Hijack
+                    0A94: start_custom_mission "INE\Heist"
+
+                    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 10@
+
+                    08E7: disable_entrance_markers 0
+                end
+            end
+
+            if
+                0039:   1@ == MISSION_JUMPON
+            then
+                0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var INE_BITMASK value_to 0@
+                if
+                    88B7:   not test 0@ bit CALL2_DONE
+                then
+                    gosub @Phone2
+                    03E5: show_text_box "INEH5" // From now on, there are 8 money bags to collect. You can check their locations in the game map (dollar icon).
+                    08BD: set 0@ bit CALL2_DONE
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var INE_BITMASK value 0@
+                end
+
+                0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MISSION_MARKER value_to 2@
+
+                0006: 11@ = 1834.2771
+                0006: 12@ = -1871.5422
+                0006: 13@ = 12.0118
+
+                if
+                    875C:   not marker 2@ enabled
+                then
+                    02A7: 2@ = create_icon_marker_and_sphere 24 at 11@ 12@ 13@
+                    018B: set_marker 2@ radar_mode 2
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MISSION_MARKER value 2@
+                end
+
+                if
+                    00EC:   actor $PLAYER_ACTOR sphere 0 near_point 11@ 12@ radius 100.0 100.0
+                then
+                    if
+                        856E:   not car 17@ defined
+                    then
+                        0247: load_model #ELEGY
+                        0247: load_model #VMAFF2
+                        038B: load_requested_models
+
+                        00A5: 17@ = create_car #ELEGY at 1834.2771 -1871.5422 12.0118
+                        0519: set_car 17@ locked 1
+                        0229: set_car 17@ primary_color_to 0 secondary_color_to 0
+                        02AC: set_car 17@ immunities BP 1 FP 1 EP 1 CP 1 MP 1
+                        0129: 18@ = create_actor_pedtype 24 model #VMAFF2 in_car 17@ driverseat
+                        02AB: set_actor 18@ immunities BP 1 FP 1 EP 1 CP 1 MP 1
+                        054A: set_actor 18@ immune_to_car_headshots 1
+                        0249: release_model #ELEGY
+                        0249: release_model #VMAFF2
+                    else
+                        if
+                            0202:   actor $PLAYER_ACTOR near_car 17@ radius 15.0 15.0 flag 0
+                        then
+                            00BC: show_text_highpriority GXT "TIP5" time 1000 flag 1
+                            07CC: set_player 0 button_15 0 // Nie ma strachu, �e niechcacy wywali kierowc�
+                            if
+                                00E1:   player 0 pressed_key 15
+                            then
+                                05CA: AS_actor $PLAYER_ACTOR enter_car 17@ passenger_seat 0 10000 ms
+                            end
+                        else
+                            07CC: set_player 0 button_15 1
+                        end
+
+                        if
+                            00DB:   actor $PLAYER_ACTOR in_car 17@
+                        then
+                            07CC: set_player 0 button_15 1
+                            0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MISSION_MARKER value_to 2@
+                            0164: disable_marker 2@
+                            0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MISSION_MARKER value 0
+
+                            0004: $ONMISSION = 1
+                            00BA: show_text_styled GXT "M5T1" time 1000 style 2 // Blow it up
+
+                            fade 0 1000
+                            gosub @Fading
+
+                            0362: remove_actor $PLAYER_ACTOR from_car_and_place_at 1831.2771 -1871.5422 13.0118
+                            00A6: destroy_car 17@
+                            009B: destroy_actor 18@
+                            0A94: start_custom_mission "INE\BlowItUp"
+
+                            0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 10@
+                        end
+                    end
+                else
+                    00A6: destroy_car 17@
+                    009B: destroy_actor 18@
+                end
+
+            end
+
+            if
+                0039:   1@ == MISSION_BLOWIT
+            then
+                0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var INE_BITMASK value_to 0@
+                if
+                    88B7:   not test 0@ bit CALL3_DONE
+                then
+                    gosub @Phone3
+                    08BD: set 0@ bit CALL3_DONE
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var INE_BITMASK value 0@
+                end
+
+                0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MISSION_MARKER value_to 2@
+
+                0006: 11@ = 1566.0491
+                0006: 12@ = -1587.2505
+                0006: 13@ = 12.9672
+
+                if
+                    875C:   not marker 2@ enabled
+                then
+                    02A7: 2@ = create_icon_marker_and_sphere 38 at 11@ 12@ 13@
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MISSION_MARKER value 2@
+                end
+
+                if
+                    00EE:   actor $PLAYER_ACTOR 0 near_point 11@ 12@ radius 3.0 3.0 in_car
+                then
+                    03C0: 14@ = actor $PLAYER_ACTOR car
+                    if and
+                        847A:   not actor $PLAYER_ACTOR driving_bike
+                        0431:   car 14@ passenger_seat_free 0
+                    then
+                        0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MISSION_MARKER value_to 2@
+                        0164: disable_marker 2@
+                        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MISSION_MARKER value 0
+
+                        0004: $ONMISSION = 1
+                        00BA: show_text_styled GXT "M6T1" time 1000 style 2 // Rescue
+                        0A94: start_custom_mission "INE\Rescue"
+
+                        0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 10@
+                    else
+                        00BC: show_text_highpriority GXT "M6I1" time 500 flag 1
+                    end
+                end
+            end
+
+            if
+                0039:   1@ == MISSION_RESCUE
+            then
+                0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MISSION_MARKER value_to 2@
+
+                0006: 11@ = 1458.9823
+                0006: 12@ = -1359.1405
+                0006: 13@ = 13.3828
+
+                if
+                    875C:   not marker 2@ enabled
+                then
+                    02A7: 2@ = create_icon_marker_and_sphere 38 at 11@ 12@ 13@
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MISSION_MARKER value 2@
+                end
+
+                if
+                    00FF:   actor $PLAYER_ACTOR sphere 0 in_sphere 11@ 12@ 13@ radius 1.2 1.2 2.0 on_foot
+                then
+                    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MISSION_MARKER value_to 2@
+                    0164: disable_marker 2@
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MISSION_MARKER value 0
+
+                    0004: $ONMISSION = 1
+                    00BA: show_text_styled GXT "M7T1" time 1000 style 2 // Hotel
+                    0A94: start_custom_mission "INE\Hotel"
+
+                    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 10@
+                end
+            end
+
+            if
+                0039:   1@ == MISSION_HOTEL
+            then
+                0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MISSION_MARKER value_to 2@
+
+                0006: 11@ = 2515.07
+                0006: 12@ = -1673.98
+                0006: 13@ = 12.71
+
+                if
+                    875C:   not marker 2@ enabled
+                then
+                    02A7: 2@ = create_icon_marker_and_sphere 38 at 11@ 12@ 13@
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MISSION_MARKER value 2@
+                end
+
+                if
+                    00FF:   actor $PLAYER_ACTOR sphere 0 in_sphere 11@ 12@ 13@ radius 1.2 1.2 2.0 on_foot
+                then
+                    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MISSION_MARKER value_to 2@
+                    0164: disable_marker 2@
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MISSION_MARKER value 0
+
+                    0004: $ONMISSION = 1
+                    00BA: show_text_styled GXT "M8T1" time 1000 style 2 // Finish him
+                    gosub @GOTO_SWEETS_HOUSE
+                    0A94: start_custom_mission "INE\FinishHim"
+
+                    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 10@
+                end
+            end
+
+            if
+                0039:   1@ == MISSION_FINALE
+            then
+                0A94: start_custom_mission "INE\Credits"
+                wait 500
+                while true
+                    wait 0
+                    if
+                        $ONMISSION == 0
+                    then
+                        02A3: enable_widescreen 1
+                        01B4: set_player $PLAYER_CHAR can_move 0
+                        067E: put_camera_on_actor $PLAYER_ACTOR with_offset 0.0 6.0 -0.5 point_to_actor $PLAYER_ACTOR 0.0 mode 2
+
+                        0512: show_permanent_text_box "INEH7"
+                        wait 5000
+                        02A3: enable_widescreen 0
+                        01B4: set_player $PLAYER_CHAR can_move 1
+                        02EB: restore_camera_with_jumpcut
+
+                        wait 2000
+                        03E6: remove_text_box
+                        break
+                    end
+                end
+            end
+
+
+
+            // To do creditsow
+            {while true
+                wait 0
+                if
+                    $ONMISSION == 0
+                then
+                    0AB4: 8@ = var 348
+
+                    if
+                        8@ == 1
+                    then
+                        0A94: start_custom_mission "INE\Credits"
+
+                        while true
+                            wait 0
+                            if
+                                $ONMISSION == 0
+                            then
+                                01B4: set_player 0 can_move 0
+
+                                015F: set_camera_position 2495.1541 -1683.5391 13.3444 rotation 0.0 0.0 0.0
+                                0159: camera_on_ped $PLAYER_ACTOR 15 2
+
+                                0512: show_permanent_text_box "INEH6"
+                                wait 5000
+                                03E6: remove_text_box
+
+                                0160: set_camera_point_at 2492.0315 -1686.2767 13.5118 mode 1
+
+                                0512: show_permanent_text_box "INEH7"
+                                wait 6000
+                                03E6: remove_text_box
+
+                                015A: restore_camera
+                                01B4: set_player 0 can_move 1
+                                break
+                            end
+                        end
+                        break
+                    end
+                end
+            end  }
+        else
+        end
+    end
+end
+
+:GOTO_SWEETS_HOUSE
+if
+    0256:   player $PLAYER_CHAR defined
+then
+    01B4: set_player $PLAYER_CHAR can_move 0
+    02A3: enable_widescreen 1
+    015F: set_camera_position 2512.233 -1673.532 12.6635 rotation 0.0 0.0 0.0
+    0160: set_camera_point_at 2513.139 -1673.825 12.9696 mode 2
+    0395: clear_area 1 at 2513.139 -1673.825 12.9696 radius 2.0
+    0395: clear_area 1 at 2521.35 -1678.83 14.32 radius 1.0
+    05D3: AS_actor $PLAYER_ACTOR goto_point 2521.35 -1678.83 14.32 mode 4 time 3000 ms // versionA
+    jump @FADEOUT_AND_RESTORE
+end
+0051: return
+
+:FADEOUT_AND_RESTORE
+0169: set_fade_color_RGB 0 0 0
+016A: fade 0 time 500
+
+while true
+    if
+        016B:   fading
+    jf break
+    wait 0
+    00BE: text_clear_all
+    03E6: remove_text_box
+end
+
+if
+    0256:   player $PLAYER_CHAR defined
+then
+    02EB: restore_camera_with_jumpcut
+    0687: clear_actor $PLAYER_ACTOR task
+end
+return
+
+
+:Phone1
+0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var INE_BITMASK value_to 0@
+
+03CF: load_wav 23000 as 1
+repeat
+    wait 0
+until 03D0: wav 1 loaded
+
+0247: load_model #CELLPHONE
+038B: load_requested_models
+
+wait 5000
+
+03D1: play_wav 1
+0729: AS_actor $PLAYER_ACTOR hold_cellphone 1
+wait 2000
+
+00BC: show_text_highpriority GXT "PC1T1" time 8200 flag 1
+
+if
+    08B7:   test 0@ bit VOICES_BIT
+then
+    0AAC: 20@ = load_audiostream "CLEO\INE\audio\boss\pc1t1.mp3"
+    0AAD: set_audiostream 20@ perform_action 1
+end
+wait 8200
+0AAE: release_audiostream 20@
+
+0729: AS_actor $PLAYER_ACTOR hold_cellphone 0
+0249: release_model #CELLPHONE
+040D: unload_wav 1
+return
+
+
+:Phone2
+0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var INE_BITMASK value_to 0@
+
+03CF: load_wav 23000 as 1
+repeat
+    wait 0
+until 03D0: wav 1 loaded
+
+0247: load_model #CELLPHONE
+038B: load_requested_models
+
+wait 5000
+
+03D1: play_wav 1
+0729: AS_actor $PLAYER_ACTOR hold_cellphone 1
+wait 2000
+
+00BC: show_text_highpriority GXT "PC2T1" time 4200 flag 1
+
+if
+    08B7:   test 0@ bit VOICES_BIT
+then
+    0AAC: 20@ = load_audiostream "CLEO\INE\audio\boss\pc2t1.mp3"
+    0AAD: set_audiostream 20@ perform_action 1
+end
+
+wait 4200
+0AAE: release_audiostream 20@
+
+0729: AS_actor $PLAYER_ACTOR hold_cellphone 0
+0249: release_model #CELLPHONE
+040D: unload_wav 1
+return
+
+
+:Phone3
+0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var INE_BITMASK value_to 0@
+
+03CF: load_wav 23000 as 1
+repeat
+    wait 0
+until 03D0: wav 1 loaded
+
+0247: load_model #CELLPHONE
+038B: load_requested_models
+
+wait 6000
+
+if
+    00DF:   actor $PLAYER_ACTOR driving
+then
+    041E: set_radio_station 12
+end
+
+03D1: play_wav 1
+0729: AS_actor $PLAYER_ACTOR hold_cellphone 1
+wait 2000
+
+00BC: show_text_highpriority GXT "PC3T1" time 5300 flag 1
+if
+    08B7:   test 0@ bit VOICES_BIT
+then
+    0AAC: 20@ = load_audiostream "CLEO\INE\audio\boss\pc3t1.mp3"
+    0AAD: set_audiostream 20@ perform_action 1
+end
+wait 5300
+0AAE: release_audiostream 20@
+
+
+00BC: show_text_highpriority GXT "PC3T2" time 1000 flag 1
+if
+    08B7:   test 0@ bit VOICES_BIT
+then
+    0AAC: 20@ = load_audiostream "CLEO\INE\audio\cj\pc3t2.mp3"
+    0AAD: set_audiostream 20@ perform_action 1
+end
+wait 500
+
+00BC: show_text_highpriority GXT "PC3T3" time 2300 flag 1
+if
+    08B7:   test 0@ bit VOICES_BIT
+then
+    0AAC: 20@ = load_audiostream "CLEO\INE\audio\boss\pc3t3.mp3"
+    0AAD: set_audiostream 20@ perform_action 1
+end
+wait 2300
+0AAE: release_audiostream 20@
+
+
+00BC: show_text_highpriority GXT "PC3T4" time 3300 flag 1
+if
+    08B7:   test 0@ bit VOICES_BIT
+then
+    0AAC: 20@ = load_audiostream "CLEO\INE\audio\boss\pc3t4.mp3"
+    0AAD: set_audiostream 20@ perform_action 1
+end
+wait 3300
+0AAE: release_audiostream 20@
+
+
+0AAC: 21@ = load_audiostream "CLEO\INE\audio\music\dramatic.mp3"
+0AAD: set_audiostream 21@ perform_action 1
+
+
+00BC: show_text_highpriority GXT "PC3T5" time 3300 flag 1
+if
+    08B7:   test 0@ bit VOICES_BIT
+then
+    0AAC: 20@ = load_audiostream "CLEO\INE\audio\cj\pc3t5.mp3"
+    0AAD: set_audiostream 20@ perform_action 1
+end
+wait 3300
+0AAE: release_audiostream 20@
+
+
+0729: AS_actor $PLAYER_ACTOR hold_cellphone 0
+
+wait 1000
+
+00BC: show_text_highpriority GXT "PC3T6" time 2000 flag 1
+if
+    08B7:   test 0@ bit VOICES_BIT
+then
+    0AAC: 20@ = load_audiostream "CLEO\INE\audio\cj\pc3t6.mp3"
+    0AAD: set_audiostream 20@ perform_action 1
+end
+wait 5000
+0AAE: release_audiostream 20@
+
+
+
+
+03D1: play_wav 1
+0729: AS_actor $PLAYER_ACTOR hold_cellphone 1
+wait 2000
+
+
+0AAC: 21@ = load_audiostream "CLEO\INE\audio\sfx\gunbattle.mp3"
+0AAD: set_audiostream 21@ perform_action 1
+0ABC: set_audiostream 21@ volume 0.7
+
+00BC: show_text_highpriority GXT "PC3T7" time 3300 flag 1
+if
+    08B7:   test 0@ bit VOICES_BIT
+then
+    0AAC: 20@ = load_audiostream "CLEO\INE\audio\sweet\pc3t7.mp3"
+    0AAD: set_audiostream 20@ perform_action 1
+end
+wait 3000
+0AAE: release_audiostream 20@
+
+
+00BC: show_text_highpriority GXT "PC3T8" time 3000 flag 1
+if
+    08B7:   test 0@ bit VOICES_BIT
+then
+    0AAC: 20@ = load_audiostream "CLEO\INE\audio\sweet\pc3t8.mp3"
+    0AAD: set_audiostream 20@ perform_action 1
+end
+wait 3000
+0AAE: release_audiostream 20@
+
+
+00BC: show_text_highpriority GXT "PC3T9" time 1200 flag 1
+if
+    08B7:   test 0@ bit VOICES_BIT
+then
+    0AAC: 20@ = load_audiostream "CLEO\INE\audio\cj\pc3t9.mp3"
+    0AAD: set_audiostream 20@ perform_action 1
+end
+wait 1200
+0AAE: release_audiostream 20@
+
+
+00BC: show_text_highpriority GXT "PC3T10" time 3100 flag 1
+if
+    08B7:   test 0@ bit VOICES_BIT
+then
+    0AAC: 20@ = load_audiostream "CLEO\INE\audio\sweet\pc3t10.mp3"
+    0AAD: set_audiostream 20@ perform_action 1
+end
+wait 3100
+0AAE: release_audiostream 20@
+
+
+0AAD: set_audiostream 21@ perform_action 0
+0729: AS_actor $PLAYER_ACTOR hold_cellphone 0
+
+0249: release_model #CELLPHONE
+040D: unload_wav 1
+
+return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{:MENU
+wait 0
+if
+    $ONMISSION == 0
+then
+    19@ = Marker.CreateIconAndSphere(38, 2492.0315, -1686.2767, 13.5118)
+else
+    jump @MENU
+end
+
+:MENU_Listener_check
+wait 0
+if
+ 00FF:   actor $PLAYER_ACTOR sphere 0 in_sphere 2492.0315 -1686.2767 13.5118 radius 1.2 1.2 2.0 on_foot
+jf @MENU_Listener_check   }
+
+const
+    MENU_CJHouse_X          = 2492.0315
+    MENU_CJHouse_Y          = -1686.2767
+    MENU_CJHouse_Z          = 12.5
+
+    MENU_PanelHandle            = 20@
+    MENU_CurrentOption          = 21@
+    MENU_PressedKey             = 22@
+    MENU_OptionsBits            = 23@
+    MENU_MissionTextureID       = 24@
+    MENU_CurrentMenuID          = 25@
+    MENU_BitToSet               = 26@
+
+    // Enumeratory dla CurrentMenuID
+    MENU_MAINMENU           = 0
+    MENU_OPTIONS            = 1
+    MENU_MISSIONS           = 2
+    MENU_USJ                = 3
+    MENU_CREDITS            = 4
+    MENU_EXTRAS             = 5
+
+    // Enumeratory dla PRESSED_KEY
+    PRESSED_KEY_NONE        = 0
+    PRESSED_KEY_EXIT        = 1
+    PRESSED_KEY_ENTER       = 2
+
+end
+
+
+:MENU
+while true
+    0001: wait 0 ms
+    if
+        $ONMISSION == 0
+    then
+//    if
+//        00FF:   actor $PLAYER_ACTOR sphere 0 in_sphere MENU_CJHouse_X MENU_CJHouse_Y MENU_CJHouse_Z radius 10.0 10.0 20.0 on_foot
+//    then
+        if or
+            00FF:   actor $PLAYER_ACTOR sphere 1 in_sphere MENU_CJHouse_X MENU_CJHouse_Y MENU_CJHouse_Z radius 1.2 1.2 2.0 on_foot
+            0ADC: test_cheat "INEMENU"
+        then
+            0390: load_txd_dictionary "ine"
+            038F: load_texture "mission1" as 1
+            038F: load_texture "mission2" as 2
+            038F: load_texture "mission3" as 3
+            038F: load_texture "mission4" as 4
+            038F: load_texture "mission5" as 5
+            038F: load_texture "mission6" as 6
+            038F: load_texture "mission7" as 7
+            038F: load_texture "mission8" as 8
+            038F: load_texture "kidnapping" as 11
+            038F: load_texture "da_nang_fags" as 12
+            038F: load_texture "take_it_back" as 13
+            038F: load_texture "uj_map" as 9
+            038F: load_texture "gmz" as 10
+
+//            03F0: enable_text_draw 1
+//            MENU_MissionTextureID = -1
+            MENU_PressedKey = PRESSED_KEY_NONE
+            MENU_CurrentMenuID = MENU_MAINMENU
+
+            01B4: set_player 0 can_move 0
+            00BE: text_clear_all
+            03E6: remove_text_box
+//            08D4: MENU_PanelHandle = create_panel_with_title "INE_M" position 30.0 10.0 width 200.0 columns 1 interactive 1 background 1 alignment 1
+
+//0512: show_permanent_text_box "CLOTHA"
+//Player.CanMove(0) = False
+
+            while true
+                wait 0
+                if
+                    00FF:   actor $PLAYER_ACTOR sphere 0 in_sphere MENU_CJHouse_X MENU_CJHouse_Y MENU_CJHouse_Z radius 1.5 1.5 2.0 on_foot
+                then
+                    00BB: show_text_lowpriority GXT 'INE_m00' time 5000 flag 1
+                end
+
+                0871: init_jump_table MENU_CurrentMenuID total_jumps 6 default_jump 0 @MENU_CASE_END jumps MENU_MAINMENU @MENU_CASE_MAINMENU MENU_OPTIONS @MENU_CASE_OPTIONS MENU_MISSIONS @MENU_CASE_MISSIONS MENU_USJ @MENU_CASE_USJ MENU_CREDITS @MENU_CASE_CREDITS MENU_EXTRAS @MENU_CASE_EXTRAS -1 @MENU_CASE_END
+
+                :MENU_CASE_MAINMENU
+                08DA: remove_panel MENU_PanelHandle
+                08D4: MENU_PanelHandle = create_panel_with_title "INE_M" position 30.0 10.0 width 200.0 columns 1 interactive 1 background 1 alignment 1
+                08DB: set_panel MENU_PanelHandle column 0 header "DUMMY" data "INE_M0" "INE_M1" "INE_M2" "INE_M3" "INE_M4" "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY"  // Header tu by� naprawd� zb�dny
+
+                0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 27@
+                if and
+                    not 27@ == MISSION_FINALE
+                    not 27@ == CREDITS
+                then
+                    //08D9: set_panel MENU_PanelHandle row 1 enable 0
+                else
+                    08D9: set_panel MENU_PanelHandle row 1 enable 1
+                end
+//                090E: set_panel MENU_PanelHandle active_row 0
+                {if
+                 not MENU_CurrentMenuID == MENU_MAINMENU
+                then
+                 wait 500
+                end}
+
+//                MENU_CurrentMenuID = MENU_MAINMENU
+                jump @MENU_CASE_END
+
+                :MENU_CASE_OPTIONS
+//                MENU_CurrentMenuID = MENU_OPTIONS
+                08DA: remove_panel MENU_PanelHandle
+                08D4: MENU_PanelHandle = create_panel_with_title "INE_m" position 30.0 10.0 width 100.0 columns 2 interactive 1 background 1 alignment 1
+
+                08DB: set_panel MENU_PanelHandle column 0 header "DUMMY" data "INE_m01" "INE_m02" "INE_m03" "INE_m04" "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY"
+
+                0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var INE_BITMASK value_to MENU_OptionsBits
+
+                for MENU_CurrentOption = 0 to 3
+                    0A8E: MENU_BitToSet = MENU_CurrentOption + 1
+                    if
+                        08B7:   test MENU_OptionsBits bit MENU_BitToSet
+                    then
+                        08EE: set_panel MENU_PanelHandle column 1 row MENU_CurrentOption text_1number GXT "FEM_ON" number 0  // ON
+                    else
+                        08EE: set_panel MENU_PanelHandle column 1 row MENU_CurrentOption text_1number GXT "FEM_OFF" number 0  // OFF
+                    end
+                end
+
+
+
+//                090E: set_panel MENU_PanelHandle active_row 0
+
+                // Dostosowa� do bit�w, doda� ON i OFF
+                {0AB4: 0@ = var 351
+                08EE: set_panel MENU_PanelHandle column 1 row 0 text_1number GXT "INE_0" number 0@
+
+                0AB4: 0@ = var 352
+                08EE: set_panel MENU_PanelHandle column 1 row 1 text_1number GXT "INE_0" number 0@
+
+                0AB4: 0@ = var 353
+                08EE: set_panel MENU_PanelHandle column 1 row 2 text_1number GXT "INE_0" number 0@ }
+
+                //08DB: set_panel MENU_PanelHandle column 1 header "INE_st" data 1@s 2@s 3@s "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY"
+//                wait 500
+                jump @MENU_CASE_END
+
+                :MENU_CASE_MISSIONS
+//                MENU_CurrentMenuID = MENU_MISSIONS
+                08DA: remove_panel MENU_PanelHandle
+                08D4: MENU_PanelHandle = create_panel_with_title "INE_M" position 30.0 10.0 width 200.0 columns 1 interactive 1 background 1 alignment 1
+                08DB: set_panel MENU_PanelHandle column 0 header "DUMMY" data "M1T1" "M2T1" "M3T1" "M4T1" "M5T1" "M6T1" "M7T1" "M8T1" "DUMMY" "DUMMY" "DUMMY" "DUMMY"
+//                090E: set_panel MENU_PanelHandle active_row 0
+//                wait 500
+                jump @MENU_CASE_END
+
+                :MENU_CASE_USJ
+                08DA: remove_panel MENU_PanelHandle
+//                MENU_CurrentMenuID = MENU_USJ
+//                wait 500
+                // Hmm...
+                jump @MENU_CASE_END
+
+                :MENU_CASE_CREDITS
+                //MENU_CurrentMenuID = MENU_CREDITS
+                08DA: remove_panel MENU_PanelHandle
+//                03E6: remove_text_box
+//                Player.CanMove(0) = True
+                01B4: set_player 0 can_move 1
+                0A94: start_custom_mission "INE\Credits"
+//                wait 500
+                jump @MENU
+
+                :MENU_CASE_EXTRAS
+//                MENU_CurrentMenuID = MENU_EXTRAS
+                08DA: remove_panel MENU_PanelHandle
+                08D4: MENU_PanelHandle = create_panel_with_title "INE_M" position 30.0 10.0 width 200.0 columns 1 interactive 1 background 1 alignment 1
+                08DB: set_panel MENU_PanelHandle column 0 header "DUMMY" data "ME1T1" "ME2T1" "ME3T1" "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY" "DUMMY"
+                090E: set_panel MENU_PanelHandle active_row 0
+
+                if
+                    8AAB:   not file_exists "CLEO\INE\Kidnapping.cm"
+                then
+                    08D9: set_panel MENU_PanelHandle row 0 enable 0
+                end
+
+                if
+                    8AAB:   not file_exists "CLEO\INE\DaNangFags.cm"
+                then
+                    08D9: set_panel MENU_PanelHandle row 1 enable 0
+                end
+
+                if
+                    8AAB:   not file_exists "CLEO\INE\TakeItBack.cm"
+                then
+                    08D9: set_panel MENU_PanelHandle row 2 enable 0
+                end
+
+//                wait 500
+//                jump @MENU_choice
+
+
+
+                :MENU_CASE_END
+                while true
+                    0001: wait 0 ms
+                    gosub @MENU_DISPLAY_TEXTURES_AND_HINTS
+                    if
+                        00E1:   player 0 pressed_key 15
+                    then
+                        MENU_PressedKey = PRESSED_KEY_EXIT
+                    else
+                        if
+                            MENU_PressedKey == PRESSED_KEY_EXIT
+                        then
+                            if
+                                MENU_CurrentMenuID == MENU_MAINMENU
+                            then
+                                08DA: remove_panel MENU_PanelHandle
+                                01B4: set_player 0 can_move 1
+                                jump @MENU_END
+                            end // else tu nie potrzeba, bo na koncu then jest skok
+
+                            MENU_PressedKey = PRESSED_KEY_NONE
+                            MENU_CurrentMenuID = MENU_MAINMENU
+                            break
+                        end
+                    end
+                    if
+                        00E1:   player 0 pressed_key 16
+                    then
+                        MENU_PressedKey = PRESSED_KEY_ENTER
+                    else
+                        if
+                            MENU_PressedKey == PRESSED_KEY_ENTER
+                        then
+                            MENU_PressedKey = PRESSED_KEY_NONE
+                            08D8: MENU_CurrentOption = panel MENU_PanelHandle selected_row
+                            0871: init_jump_table MENU_CurrentMenuID total_jumps 6 default_jump 0 @MENU_OPTION_CASE_END jumps MENU_MAINMENU @MENU_OPTION_CASE_MAINMENU MENU_OPTIONS @MENU_OPTION_CASE_OPTIONS MENU_MISSIONS @MENU_OPTION_CASE_MISSIONS MENU_USJ @MENU_OPTION_CASE_END MENU_CREDITS @MENU_OPTION_CASE_END MENU_EXTRAS @MENU_OPTION_CASE_EXTRAS -1 @MENU_OPTION_CASE_END
+
+                            :MENU_OPTION_CASE_MAINMENU
+                                0085: MENU_CurrentMenuID = MENU_CurrentOption
+                                MENU_CurrentMenuID += 1
+                                break
+
+                            :MENU_OPTION_CASE_OPTIONS
+                                0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var INE_BITMASK value_to MENU_OptionsBits
+                                0A8E: MENU_BitToSet = MENU_CurrentOption + 1
+
+                                // W sumie wystarczy�oby chyba NOT, ale to wymaga specjalnego plugina CLEO4, lepiej zrobi� tak
+                                if
+                                    08B7:   test MENU_OptionsBits bit MENU_BitToSet
+                                then
+                                    08C3: clear MENU_OptionsBits bit MENU_BitToSet
+                                    08EE: set_panel MENU_PanelHandle column 1 row MENU_CurrentOption text_1number GXT "FEM_OFF" number 0  // OFF
+                                else
+                                    08BD: set MENU_OptionsBits bit MENU_BitToSet
+                                    08EE: set_panel MENU_PanelHandle column 1 row MENU_CurrentOption text_1number GXT "FEM_ON" number 0  // ON
+                                end
+                                0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var INE_BITMASK value MENU_OptionsBits
+                                jump @MENU_OPTION_CASE_END
+
+                            :MENU_OPTION_CASE_MISSIONS
+                                0004: $ONMISSION = 1
+                                08DA: remove_panel MENU_PanelHandle
+                                0871: init_jump_table MENU_CurrentOption total_jumps 8 default_jump 0 @MENU jumps 0 @MENU_MISSION_1 1 @MENU_MISSION_2 2 @MENU_MISSION_3 3 @MENU_MISSION_4 4 @MENU_MISSION_5 5 @MENU_MISSION_6 6 @MENU_MISSION_7
+                                0872: jump_table_jumps 7 @MENU_MISSION_8 -1 @MENU -1 @MENU -1 @MENU -1 @MENU -1 @MENU -1 @MENU -1 @MENU -1 @MENU
+
+                                :MENU_MISSION_1
+                                    0A94: start_custom_mission "INE\Hostage"
+                                    jump @MENU_END
+
+                                :MENU_MISSION_2
+                                    0A94: start_custom_mission "INE\Cocaine"
+                                    jump @MENU_END
+
+                                :MENU_MISSION_3
+                                    0A94: start_custom_mission "INE\Eye4Eye"
+                                    jump @MENU_END
+
+                                :MENU_MISSION_4
+                                    0A94: start_custom_mission "INE\Heist"
+                                    jump @MENU_END
+
+                                :MENU_MISSION_5
+                                    0A94: start_custom_mission "INE\BlowItUp"
+                                    jump @MENU_END
+
+                                :MENU_MISSION_6
+                                    0247: load_model #GREENWOO
+                                    fade 0 1500
+                                    gosub @Fading
+                                    038B: load_requested_models
+                                    00A5: 22@ = create_car #GREENWOO at 1566.0491 -1587.2505 12.9672
+                                    0175: set_car 22@ Z_angle_to 87.0
+                                    036A: put_actor $PLAYER_ACTOR in_car 22@
+                                    01C3: remove_references_to_car 22@
+                                    0249: release_model #GREENWOO
+                                    0A94: start_custom_mission "INE\Rescue"
+                                    jump @MENU_END
+
+                                :MENU_MISSION_7
+                                    0A94: start_custom_mission "INE\Hotel"
+                                    jump @MENU_END
+
+                                :MENU_MISSION_8
+                                    0A94: start_custom_mission "INE\FinishHim"
+                                    jump @MENU_END
+
+                            {:MENU_OPTION_CASE_USJ
+                                break
+
+                            :MENU_OPTION_CASE_CREDITS
+                                break}
+
+                            :MENU_OPTION_CASE_EXTRAS
+                                0004: $ONMISSION = 1
+                                08DA: remove_panel MENU_PanelHandle
+                                0871: init_jump_table MENU_CurrentOption total_jumps 3 default_jump 0 @MENU jumps 0 @MENU_EXTRA_1 1 @MENU_EXTRA_2 2 @MENU_EXTRA_3 -1 @MENU -1 @MENU -1 @MENU -1 @MENU
+
+                                :MENU_EXTRA_1
+                                    0A94: start_custom_mission "INE\Kidnapping"
+                                    jump @MENU_END
+
+                                :MENU_EXTRA_2
+                                    0A94: start_custom_mission "INE\DaNangFags"
+                                    jump @MENU_END
+
+                                :MENU_EXTRA_3
+                                    0A94: start_custom_mission "INE\TakeItBack"
+                                    jump @MENU_END
+
+                            :MENU_OPTION_CASE_END
+                        end
+                    end
+                end
+            end
+
+            :MENU_END
+            while 00FF:   actor $PLAYER_ACTOR sphere 0 in_sphere MENU_CJHouse_X MENU_CJHouse_Y MENU_CJHouse_Z radius 1.5 1.5 2.0 on_foot
+                0001: wait 0 ms
+            end
+
+        end
+    end
+//    end
+end
+
+
+
+
+
+
+
+
+
+
+
+                {gosub @MENU_display_texture
+                wait 0
+                if
+                 00E1: player 0 pressed_key 15
+                jf @MENU_choice2
+
+                if
+                 MENU_CurrentMenuID == MENU_MAINMENU
+                then
+                 08DA: remove_panel MENU_PanelHandle
+                 03E6: remove_text_box
+                 Player.CanMove(0) = True
+                 wait 1500
+                 jump @MENU
+                else
+                 jump @MENU_root
+                end}
+
+
+                {:MENU_choice2
+                gosub @MENU_display_texture
+                wait 0
+                if
+                 00E1: player 0 pressed_key 16
+                jf @MENU_choice3
+
+                08D7: MENU_CurrentOption = panel MENU_PanelHandle active_row
+
+
+                if
+                 MENU_CurrentMenuID == MENU_MAINMENU
+                then
+                 if
+                  MENU_CurrentOption == 0
+                 then
+                  jump @MENU_options
+                 end
+
+                 if
+                  MENU_CurrentOption == 1
+                 then
+                  jump @MENU_missions
+                 end
+
+                 if
+                  MENU_CurrentOption == 2
+                 then
+                  jump @MENU_unique_jumps
+                 end
+
+                 if
+                  MENU_CurrentOption == 3
+                 then
+                  jump @MENU_authors
+                 end
+
+                 if
+                  MENU_CurrentOption == 4
+                 then
+                  jump @MENU_extras
+                 end
+                end
+
+                if
+                 MENU_CurrentMenuID == MENU_OPTIONS
+                then
+                 08DA: remove_panel MENU_PanelHandle
+                 03E6: remove_text_box
+
+                    if
+                        MENU_CurrentOption == 0
+                    then
+                        0AB4: 1@ = var 351
+                        if
+                            1@ == 1
+                        then
+                            0AB3: var 351 = 0
+                        else
+                            0AB3: var 351 = 1
+                        end
+                    end
+                    if
+                        MENU_CurrentOption == 1
+                    then
+                        0AB4: 1@ = var 352
+                        if
+                            1@ == 1
+                        then
+                            0AB3: var 352 = 0
+                        else
+                            0AB3: var 352 = 1
+                        end
+                    end
+                    if
+                        MENU_CurrentOption == 2
+                    then
+                        0AB4: 1@ = var 353
+                        if
+                            1@ == 1
+                        then
+                            0AB3: var 353 = 0
+                        else
+                            0AB3: var 353 = 1
+                        end
+                    end
+
+                    jump @MENU_options
+                end
+
+                if
+                 MENU_CurrentMenuID == MENU_MISSIONS
+                then
+                 08DA: remove_panel MENU_PanelHandle
+                 03E6: remove_text_box
+                 jump @MENU_Mission_1
+                end
+
+                if
+                 MENU_CurrentMenuID == MENU_USJ
+                then
+                // 08DA: remove_panel MENU_PanelHandle
+                // 03E6: remove_text_box
+                end
+
+                if
+                 MENU_CurrentMenuID == MENU_CREDITS
+                then
+                 08DA: remove_panel MENU_PanelHandle
+                 03E6: remove_text_box
+                end
+
+                if
+                 MENU_CurrentMenuID == MENU_EXTRAS
+                then
+                 08DA: remove_panel MENU_PanelHandle
+                 03E6: remove_text_box
+                end
+
+                wait 1000
+
+
+                :MENU_choice3
+                gosub @MENU_display_texture
+                08D7: 23@ = panel MENU_PanelHandle active_row
+                wait 0
+                if
+                 803B:   not  22@ == 23@
+                jf @MENU_choice
+
+                08D7: 22@ = panel MENU_PanelHandle active_row
+                0085: MENU_MissionTextureID = 22@
+                MENU_MissionTextureID += 1
+
+                jump @MENU_choice  }
+
+
+
+                {:MENU_DISPLAY_TEXTURES
+                if
+                 not MENU_MissionTextureID == -1
+                then
+                 if
+                  MENU_CurrentMenuID == MENU_OPTIONS
+                 then
+                  if
+                   MENU_MissionTextureID == 1
+                  then
+                   00BC: show_text_highpriority GXT "INE_d01" time 10 flag 1
+                  else
+                   if
+                    MENU_MissionTextureID == 2
+                   then
+                    00BC: show_text_highpriority GXT "INE_d02" time 10 flag 1
+                   else
+                    if
+                     MENU_MissionTextureID == 3
+                    then
+                     00BC: show_text_highpriority GXT "INE_d03" time 10 flag 1
+                    end
+                   end
+                  end
+                 end
+
+                 if
+                  MENU_CurrentMenuID == MENU_MISSIONS
+                 then
+                  038D: draw_texture MENU_MissionTextureID position 350.0 60.0 size 200.0 100.0 RGBA 128 128 128 255
+                 end
+
+                 // Unikalne skoki
+                 if and
+                  MENU_CurrentMenuID == MENU_MAINMENU
+                  MENU_MissionTextureID == 3
+                 then
+                  038D: draw_texture 9 position 400.0 85.0 size 300.0 150.0 RGBA 128 128 128 255
+                 end
+
+                 if
+                  MENU_CurrentMenuID == MENU_USJ
+                 then
+                  038D: draw_texture 9 position 320.0 225.0 size 600.0 300.0 RGBA 128 128 128 255
+                 end
+
+                 // "Dodatkowe Misje!"
+                 if and
+                  MENU_CurrentMenuID == MENU_MAINMENU
+                  MENU_MissionTextureID == 5
+                 then
+                  038D: draw_texture 10 position 400.0 85.0 size 300.0 150.0 RGBA 128 128 128 255
+                  00BC: show_text_highpriority GXT "INE_m41" time 10 flag 1
+                 end
+
+                 if
+                  MENU_CurrentMenuID == MENU_EXTRAS
+                 then
+                  038D: draw_texture 10 position 400.0 85.0 size 300.0 150.0 RGBA 128 128 128 255
+                  00BC: show_text_highpriority GXT "INE_m41" time 10 flag 1
+                 end
+                end
+                return
+
+
+
+                :MENU_Mission_1
+                if
+                 MENU_CurrentOption == 0
+                then
+                 0A94: start_custom_mission "INE\Hostage"
+                 jump @MENU
+                end
+
+                :MENU_Mission_2
+                if
+                 MENU_CurrentOption == 1
+                then
+                 0A94: start_custom_mission "INE\Cocaine"
+                 jump @MENU
+                end
+
+                :MENU_Mission_3
+                if
+                 MENU_CurrentOption == 2
+                then
+                 0A94: start_custom_mission "INE\Eye4Eye"
+                 jump @MENU
+                end
+
+                :MENU_Mission_4
+                if
+                 MENU_CurrentOption == 3
+                then
+                 0A94: start_custom_mission "INE\Heist"
+                 jump @MENU
+                end
+
+                :MENU_Mission_5
+                if
+                 MENU_CurrentOption == 4
+                then
+                 0A94: start_custom_mission "INE\BlowItUp"
+                 jump @MENU
+                end
+
+                :MENU_Mission_6
+                if
+                 MENU_CurrentOption == 5
+                then
+                 0247: load_model #GREENWOO
+                 fade 0 1500
+                 gosub @Fading
+                 00A5: 22@ = create_car #GREENWOO at 0.0 0.0 0.0
+                 00AB: put_car 22@ at 1566.0491 -1587.2505 12.9672
+                 0175: set_car 22@ Z_angle_to 87.0
+                 036A: put_actor $PLAYER_ACTOR in_car 22@
+                 0A94: start_custom_mission "INE\Rescue"
+                 jump @MENU
+                end
+
+                :MENU_Mission_7
+                if
+                 MENU_CurrentOption == 6
+                then
+                 0A94: start_custom_mission "INE\Hotel"
+                 jump @MENU
+                end
+
+                :MENU_Mission_8
+                if
+                 MENU_CurrentOption == 7
+                then
+                 0A94: start_custom_mission "INE\FinishHim"
+                 jump @MENU
+                end  }
+
+
+
+:MENU_DISPLAY_TEXTURES_AND_HINTS
+08D7: MENU_MissionTextureID = panel MENU_PanelHandle active_row
+MENU_MissionTextureID += 1
+0871: init_jump_table MENU_CurrentMenuID total_jumps 5 default_jump 0 @MENU_TEXTURE_CASE_END jumps MENU_MAINMENU @MENU_TEXTURE_CASE_MAINMENU MENU_OPTIONS @MENU_TEXTURE_CASE_OPTIONS MENU_MISSIONS @MENU_TEXTURE_CASE_MISSIONS MENU_USJ @MENU_TEXTURE_CASE_USJ MENU_EXTRAS @MENU_TEXTURE_CASE_EXTRAS -1 @MENU_TEXTURE_CASE_END -1 @MENU_TEXTURE_CASE_END
+
+:MENU_TEXTURE_CASE_MAINMENU
+    03F0: enable_text_draw 1
+    if
+        MENU_MissionTextureID == 3
+    then
+        03E3: set_texture_to_be_drawn_antialiased 1
+        038D: draw_texture 9 position 400.0 85.0 size 300.0 150.0 RGBA 127 127 127 255
+    end
+    if
+        MENU_MissionTextureID == 5
+    then
+        if or
+            8AAB:   not file_exists "CLEO\INE\Kidnapping.cm"
+            8AAB:   not file_exists "CLEO\INE\DaNangFags.cm"
+            8AAB:   not file_exists "CLEO\INE\TakeItBack.cm"
+        then
+            03E3: set_texture_to_be_drawn_antialiased 1
+            038D: draw_texture 10 position 400.0 85.0 size 300.0 150.0 RGBA 127 127 127 255
+            00BC: show_text_highpriority GXT "INE_M41" time 250 flag 1
+        else
+            // Wszystkie misje pobrane
+            03E3: set_texture_to_be_drawn_antialiased 1
+            038D: draw_texture 10 position 400.0 85.0 size 300.0 150.0 RGBA 127 127 127 255
+            //00BC: show_text_highpriority GXT "INE_M41" time 250 flag 1
+        end
+    end
+    jump @MENU_TEXTURE_CASE_END
+
+:MENU_TEXTURE_CASE_OPTIONS
+    if
+        MENU_MissionTextureID == 1
+    then
+        00BC: show_text_highpriority GXT "INE_D01" time 250 flag 1
+    end
+    if
+        MENU_MissionTextureID == 2
+    then
+        00BC: show_text_highpriority GXT "INE_D02" time 250 flag 1
+    end
+    if
+        MENU_MissionTextureID == 3
+    then
+        00BC: show_text_highpriority GXT "INE_D03" time 250 flag 1
+    end
+    if
+        MENU_MissionTextureID == 4
+    then
+        00BC: show_text_highpriority GXT "INE_D04" time 250 flag 1
+    end
+    jump @MENU_TEXTURE_CASE_END
+
+:MENU_TEXTURE_CASE_MISSIONS
+    03E3: set_texture_to_be_drawn_antialiased 1
+    038D: draw_texture MENU_MissionTextureID position 350.0 60.0 size 200.0 100.0 RGBA 127 127 127 255
+    jump @MENU_TEXTURE_CASE_END
+
+:MENU_TEXTURE_CASE_USJ
+    03E3: set_texture_to_be_drawn_antialiased 1
+    038D: draw_texture 9 position 320.0 225.0 size 600.0 300.0 RGBA 127 127 127 255
+    jump @MENU_TEXTURE_CASE_END
+
+:MENU_TEXTURE_CASE_EXTRAS
+    000A: MENU_MissionTextureID += 10
+    03E3: set_texture_to_be_drawn_antialiased 1
+    038D: draw_texture MENU_MissionTextureID position 350.0 60.0 size 200.0 100.0 RGBA 127 127 127 255
+    {03E3: set_texture_to_be_drawn_antialiased 1
+    038D: draw_texture 10 position 400.0 85.0 size 300.0 150.0 RGBA 127 127 127 255
+    00BC: show_text_highpriority GXT "INE_M41" time 250 flag 1}
+
+:MENU_TEXTURE_CASE_END
+return
+
+
+
+
+
+
+
+// Unikalne skoki
+
+:Unique_Jumps
+0247: load_model #TORNADO
+0247: load_model 1245
+0247: load_model 1446
+0247: load_model 2893
+0247: load_model 5153
+04ED: load_animation "dodge"
+
+while true
+    if or
+        8248:   not model #TORNADO available
+        8248:   not model 1245 available
+        8248:   not model 1446 available
+        8248:   not model 2893 available
+        8248:   not model 5153 available
+    jf break
+    wait 0
+end
+
+
+// Modele
+0107: 1@ = create_object 2893 at 2505.11 -2206.71 15.7891
+0453: set_object 1@ XY_rotation -5.0 0.0 angle 90.0
+
+0107: 2@ = create_object 2893 at 2004.8 -2065.37 16.9672
+ 0453: set_object 2@ XY_rotation 10.0 0.0 angle 90.0
+0107: 3@ = create_object 2893 at 2004.8 -2067.37 16.9672
+ 0453: set_object 3@ XY_rotation 10.0 0.0 angle 90.0
+
+// Pod autostrada
+0107: 4@ = create_object 1245 at 1540.94 -1503.5 12.3531
+0107: 5@ = create_object 1245 at 1538.44 -1503.5 14.1331
+ 0453: set_object 4@ XY_rotation 0.0 3.0 angle 0.0
+ 0453: set_object 5@ XY_rotation 0.0 5.0 angle 0.0
+
+// Pod autostrada #2
+0107: 6@ = create_object 1446 at 1558.54 -1580.89 21.6547
+0107: 7@ = create_object 1446 at 1558.51 -1578.59 21.6547
+    0453: set_object 6@ XY_rotation 90.0 0.0 angle 0.0
+    0453: set_object 7@ XY_rotation 90.0 0.0 angle 0.0
+
+0107: 8@ = create_object 1446 at 1563.14 -1580.86 21.1547
+ 0453: set_object 8@ XY_rotation 90.0 15.0 angle 0.0
+0107: 9@ = create_object 1446 at 1563.09 -1578.56 21.1547
+ 0453: set_object 9@ XY_rotation 90.0 15.0 angle 0.0
+
+0107: 10@ = create_object 1446 at 1567.73 -1580.86 20.6547
+ 0453: set_object 10@ XY_rotation 90.0 0.0 angle 0.0
+0107: 11@ = create_object 1446 at 1567.72 -1578.56 20.6547
+ 0453: set_object 11@ XY_rotation 90.0 0.0 angle 0.0
+
+0107: 12@ = create_object 1245 at 1637.73 -1561.24 21.5531
+ 0453: set_object 12@ XY_rotation 180.0 180.0 angle 22.0
+
+// Przy sklepie 24/7 | 8-ball
+0107: 13@ = create_object 1245 at 1865.4957275391 -1865.5938720703 12.6
+ 0453: set_object 13@ XY_rotation 0.0 0.0 angle 180.0
+
+// Dachy osiedla
+0107: 14@ = create_object 5153 at 1847.0999755859 -1593.9045410156 27.2
+ 0453: set_object 14@ XY_rotation 0.0 340.0 angle 2.0
+0107: 15@ = create_object 1245 at 1910.9718017578 -1586.9144287109 28.0
+ 0453: set_object 15@ XY_rotation 0.0 0.0 angle 182.0
+0107: 16@ = create_object 1245 at 1968.7200927734 -1586.2456054688 25.5
+ 0453: set_object 16@ XY_rotation 0.0 0.0 angle 180.0
+
+// Eventy
+while true
+    wait 0
+    if
+        00EE:   actor $PLAYER_ACTOR 0 near_point 2482.7822 -2207.1362 radius 3.0 5.0 in_car
+    then
+        0948: create_explosion_at 2493.3132 -2209.188 20.789 type 10 camera_shake 0.5
+        wait 200
+        0948: create_explosion_at 2493.9778 -2205.7554 19.6219 type 10 camera_shake 0.5
+    end
+    if
+        00EE:   actor $PLAYER_ACTOR 0 near_point 2469.1851 -2207.5659 radius 3.0 5.0 in_car
+    then
+        0948: create_explosion_at 2480.1533 -2205.7551 20.6129 type 10 camera_shake 0.5
+        wait 300
+        0948: create_explosion_at 2480.2048 -2208.5059 18.0666 type 10 camera_shake 0.5
+    end
+
+    if
+        00EE:   actor $PLAYER_ACTOR 0 near_point 2004.8 -2064.47 radius 5.0 5.0 in_car
+    then
+        03C0: 18@ = actor $PLAYER_ACTOR car
+        02E3: 19@ = car 18@ speed
+
+        if
+            19@ >= 10.0
+        then
+            0376: 20@ = create_random_actor_at 1991.9862 -2070.6387 24.2188
+            0173: set_actor 20@ Z_angle_to 0.0
+            0223: set_actor 20@ health_to 10
+            05BC: AS_actor 20@ jump 1
+            01C2: remove_references_to_actor 20@
+        end
+    end
+
+
+    if
+        00EE:   actor $PLAYER_ACTOR 0 near_point 1542.3 -1504.2 radius 1.5 1.5 in_car
+    then
+        03C0: 18@ = actor $PLAYER_ACTOR car
+        02E3: 19@ = car 18@ speed
+
+        if
+            19@ >= 10.0
+        then
+            0376: 20@ = create_random_actor_at 1519.37 -1509.94 22.9547
+            0376: 21@ = create_random_actor_at 1520.27 -1509.94 22.9547
+            0376: 22@ = create_random_actor_at 1522.37 -1509.94 22.9547
+            0376: 23@ = create_random_actor_at 1523.37 -1509.94 22.9547
+            0376: 24@ = create_random_actor_at 1524.37 -1509.94 22.9547
+
+            0173: set_actor 20@ Z_angle_to 0.0
+            0173: set_actor 21@ Z_angle_to 0.0
+            0173: set_actor 22@ Z_angle_to 0.0
+            0173: set_actor 23@ Z_angle_to 0.0
+            0173: set_actor 24@ Z_angle_to 0.0
+
+            32@ = 0
+            while true
+                wait 0
+                if
+                    32@ > 1000
+                then
+                    break
+                end
+            end
+
+            05C2: AS_actor 20@ show_the_finger
+            05C2: AS_actor 21@ show_the_finger
+            05C2: AS_actor 22@ show_the_finger
+            05C2: AS_actor 23@ show_the_finger
+            05C2: AS_actor 24@ show_the_finger
+
+            while true
+                wait 0
+                if
+                    81F3:   not car 18@ in_air
+                then
+                    32@ = 0
+                    while true
+                        wait 0
+                        if
+                            32@ > 1500
+                        then
+                            break
+                        end
+                    end
+
+                    034F: destroy_actor_with_fade 20@
+                    034F: destroy_actor_with_fade 21@
+                    034F: destroy_actor_with_fade 22@
+                    034F: destroy_actor_with_fade 23@
+                    034F: destroy_actor_with_fade 24@
+                    break
+                end
+            end
+        end
+    end
+
+
+    if
+        00EE:   actor $PLAYER_ACTOR 0 near_point 1647.391 -1556.8071 radius 5.0 5.0 in_car
+    then
+        03C0: 18@ = actor $PLAYER_ACTOR car
+        02E3: 19@ = car 18@ speed
+
+        if and
+            01F3:   car 18@ in_air
+            19@ >= 15.0
+        then
+            32@ = 0
+            20@ = 0
+
+            while true
+                wait 0
+                if
+                    81F3:   not car 18@ in_air
+                then
+                    break
+                end
+
+                if
+                    32@ > 200
+                then
+                    if
+                        20@ == 0
+                    then
+                        0407: store_coords_to 21@ 22@ 23@ from_car 18@ with_offset -10.0 -20.0 10.0
+                        20@ = 1
+                    else
+                        0407: store_coords_to 21@ 22@ 23@ from_car 18@ with_offset 12.0 -20.0 5.0
+                        20@ = 0
+                    end
+
+                    0948: create_explosion_at 21@ 22@ 23@ type 6 camera_shake 0.1
+                    32@ = 0
+                end
+            end
+        end
+    end
+
+
+    if
+        00EE:   actor $PLAYER_ACTOR 0 near_point 1904.8452 -1482.5847 radius 5.0 5.0 in_car
+    then
+        03C0: 18@ = actor $PLAYER_ACTOR car
+        02E3: 19@ = car 18@ speed
+
+        if
+            19@ >= 15.0
+        then
+            0376: 20@ = create_random_actor_at 1838.1047 -1478.4905 13.5534
+                0173: set_actor 20@ Z_angle_to 266.0
+
+
+                    0605: actor 20@ perform_animation_sequence "CRUSH_JUMP" IFP_file "dodge" 4.0 loop 0 0 0 0 time -1 // versionA
+                    wait 3000
+                    034F: destroy_actor_with_fade 20@
+        end
+    end
+
+
+    if
+        00EE:   actor $PLAYER_ACTOR 0 near_point 1866.2957275391 -1865.5938720703 radius 5.0 5.0 in_car
+    then
+        03C0: 18@ = actor $PLAYER_ACTOR car
+        02E3: 19@ = car 18@ speed
+
+        if
+            19@ >= 15.0
+        then
+            00A5: 20@ = create_car #TORNADO at 1877.4375 -1864.1385498047 13.329072952271
+            00A5: 21@ = create_car #TORNADO at 1881.6577148438 -1864.7034912109 13.32818031311
+                0175: set_car 21@ Z_angle_to 180.0
+            00A5: 22@ = create_car #TORNADO at 1885.9881591797 -1864.171875 13.326992988586
+
+            32@ = 0
+            while true
+                wait 0
+                if
+                    32@ > 250
+                then
+                    070C: explode_car_without_radius_damage 20@
+                    break
+                end
+            end
+
+            32@ = 0
+            while true
+                wait 0
+                if
+                    32@ > 200
+                then
+                    070C: explode_car_without_radius_damage 21@
+                    break
+                end
+            end
+
+            32@ = 0
+            while true
+                wait 0
+                if
+                    32@ > 100
+                then
+                    070C: explode_car_without_radius_damage 22@
+                    break
+                end
+            end
+
+            01C3: remove_references_to_car 20@
+            01C3: remove_references_to_car 21@
+            01C3: remove_references_to_car 22@
+        end
+    end
+
+
+    if and
+        00EC:   actor $PLAYER_ACTOR sphere 0 near_point 1913.1343 -1585.8232 radius 50.0 50.0
+        not Model.Available(#NRG500)
+    then
+        Model.Load(#NRG500)
+    end
+
+    if
+        0100:   actor $PLAYER_ACTOR in_sphere 1913.1343 -1585.8232 31.9718 radius 3.0 3.0 2.0 sphere 0 in_car
+    then
+        03C0: 18@ = actor $PLAYER_ACTOR car
+        02E3: 19@ = car 18@ speed
+
+        if
+            19@ >= 10.0
+        then
+            wait 100
+            00A5: 20@ = create_car #NRG500 at 1904.6288 -1584.0365 28.8816
+                0175: set_car 20@ Z_angle_to 254.0
+                0560: create_random_actor_in_car 20@ handle_as 21@
+            00A5: 22@ = create_car #NRG500 at 1904.4904 -1588.2145 28.8821
+                0175: set_car 22@ Z_angle_to 289.0
+                0560: create_random_actor_in_car 22@ handle_as 23@
+
+            05D6: clear_scmpath
+            05D7: add_point_to_scmpath 1948.7506 -1598.0516 13.551
+
+            07E7: AS_assign_scmpath_to_actor 21@ in_car 20@ speed 40.0 flags 2 0 5
+            04BA: set_car 20@ speed_to 40.0
+
+            wait 200
+
+            05D6: clear_scmpath
+            05D7: add_point_to_scmpath 1948.5366 -1571.9036 14.163
+
+            07E7: AS_assign_scmpath_to_actor 23@ in_car 22@ speed 40.0 flags 2 0 5
+            04BA: set_car 22@ speed_to 40.0
+
+            wait 200
+
+
+            00A5: 24@ = create_car #NRG500 at 1904.6288 -1584.0365 28.8816
+                0175: set_car 24@ Z_angle_to 254.0
+                0560: create_random_actor_in_car 24@ handle_as 25@
+            00A5: 26@ = create_car #NRG500 at 1904.4904 -1588.2145 28.8821
+                0175: set_car 26@ Z_angle_to 289.0
+                0560: create_random_actor_in_car 26@ handle_as 27@
+
+            05D6: clear_scmpath
+            05D7: add_point_to_scmpath 1948.5366 -1571.9036 14.163
+
+            07E7: AS_assign_scmpath_to_actor 27@ in_car 26@ speed 40.0 flags 2 0 5
+            04BA: set_car 26@ speed_to 40.0
+
+            wait 200
+
+            05D6: clear_scmpath
+            05D7: add_point_to_scmpath 1948.7506 -1598.0516 13.551
+
+            07E7: AS_assign_scmpath_to_actor 25@ in_car 24@ speed 40.0 flags 2 0 5
+            04BA: set_car 24@ speed_to 40.0
+
+            wait 500
+
+            070C: explode_car_without_radius_damage 20@
+            070C: explode_car_without_radius_damage 22@
+            070C: explode_car_without_radius_damage 24@
+            070C: explode_car_without_radius_damage 26@
+
+            01C2: remove_references_to_actor 21@
+            01C2: remove_references_to_actor 23@
+            01C2: remove_references_to_actor 25@
+            01C2: remove_references_to_actor 27@
+
+            01C3: remove_references_to_car 20@
+            01C3: remove_references_to_car 22@
+            01C3: remove_references_to_car 24@
+            01C3: remove_references_to_car 26@
+        end
+    end
+
+
+    if
+        0100:   actor $PLAYER_ACTOR in_sphere 1970.9777 -1585.3307 29.5069 radius 3.0 3.0 2.0 sphere 0 in_car
+    then
+        03C0: 18@ = actor $PLAYER_ACTOR car
+        02E3: 19@ = car 18@ speed
+
+        if
+            19@ >= 10.0
+        then
+            0227: 20@ = car 18@ health
+
+            //0325: 21@ = create_car 18@ fire
+            wait 500
+
+            0948: create_explosion_at 1977.9291 -1585.454 13.5854 type 10 camera_shake 0.0
+            wait 10
+            0948: create_explosion_at 1979.8682 -1585.4264 13.5864 type 10 camera_shake 0.0
+            wait 10
+            0948: create_explosion_at 1981.6622 -1585.2174 13.5877 type 10 camera_shake 0.0
+            wait 10
+            0948: create_explosion_at 1983.774 -1584.9714 13.5892 type 10 camera_shake 0.0
+            wait 10
+            0948: create_explosion_at 1985.6895 -1584.7482 13.5905 type 10 camera_shake 0.0
+
+            wait 50
+
+            0948: create_explosion_at 1973.994 -1573.8591 36.0427 type 10 camera_shake 0.0
+
+            0948: create_explosion_at 1975.142 -1592.6266 36.0427 type 10 camera_shake 0.0
+            wait 10
+            0948: create_explosion_at 1978.0063 -1573.2156 36.8166 type 10 camera_shake 0.0
+
+            0948: create_explosion_at 1977.4144 -1592.4587 36.0427 type 10 camera_shake 0.0
+            wait 10
+            0948: create_explosion_at 1980.5226 -1572.7831 37.3684 type 10 camera_shake 0.0
+
+            0948: create_explosion_at 1980.0811 -1592.2614 36.0427 type 10 camera_shake 0.0
+            wait 10
+            0948: create_explosion_at 1984.8308 -1572.7831 36.7576 type 10 camera_shake 0.0
+
+            0948: create_explosion_at 1982.7621 -1592.0635 36.0427 type 10 camera_shake 0.0
+
+
+            0224: set_car 18@ health_to 20@
+        end
+    end
+
+
+end
+
+
+
+
+
+
+
+
+
+
+
+// System oslon
+
+:Cover_System
+04ED: load_animation "SWAT"
+
+:ModelsLoaded
+wait 0
+if
+ 04EE:   animation "SWAT" loaded
+jf @ModelsLoaded
+
+
+:Cover
+0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var INE_BITMASK value_to 0@
+1@ = 0
+2@ = 0
+3@ = 0x51 // klawisz do wcisniecia
+
+if
+    08B7:   test 0@ bit COVER_SYSTEM_BIT
+then
+    while true
+        wait 0
+        0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var INE_BITMASK value_to 0@
+
+        if
+            88B7:   not test 0@ bit COVER_SYSTEM_BIT
+        then
+            1@ = 0
+            0687: clear_actor $PLAYER_ACTOR task
+            break
+        end
+
+        if and
+            84AD:   not actor $PLAYER_ACTOR in_water
+            80DF:   not actor $PLAYER_ACTOR driving
+            8118:   not actor $PLAYER_ACTOR dead
+        then
+
+            // AKTYWACJA OSLONY
+            if
+                0AB0:  key_pressed 3@
+            then
+                if
+                    1@ == 0
+                then
+                    1@ = 1
+                    2@ = 0
+                    0812: AS_actor $PLAYER_ACTOR perform_animation "SWT_WLLPK_L" IFP_file "SWAT" 4.0 loopA 1 lockX 1 lockY 1 lockF 1 time 800
+                    wait 500
+                else
+                    1@ = 0
+                    0687: clear_actor $PLAYER_ACTOR task
+                    break
+                end
+            end
+
+
+            // ZMIANA STRONY
+            if and
+                1@ == 1
+                00E1:   player 0 pressed_key 0
+            then
+                if
+                    2@ == 0
+                then
+                    2@ = 1
+                    0812: AS_actor $PLAYER_ACTOR perform_animation "SWT_WLLPK_R" IFP_file "SWAT" 4.0 loopA 1 lockX 1 lockY 1 lockF 1 time -1
+                else
+                    2@ = 0
+                    0812: AS_actor $PLAYER_ACTOR perform_animation "SWT_WLLPK_L" IFP_file "SWAT" 4.0 loopA 1 lockX 1 lockY 1 lockF 1 time -1
+                end
+                wait 500
+            end
+
+
+
+             // WYCHODZENIE ZZA OSLONY
+            if and
+               1@ == 1
+               00E1:   player 0 pressed_key 6
+            then
+                if
+                    2@ == 0
+                then
+                    0812: AS_actor $PLAYER_ACTOR perform_animation "SWT_WLLSHOOT_IN_L" IFP_file "SWAT" 20.0 loopA 0 lockX 1 lockY 1 lockF 0 time 600
+                else
+                    0812: AS_actor $PLAYER_ACTOR perform_animation "SWT_WLLSHOOT_IN_R" IFP_file "SWAT" 20.0 loopA 0 lockX 1 lockY 1 lockF 0 time 600
+                end
+                wait 600
+                0687: clear_actor $PLAYER_ACTOR task
+
+                while true
+                    wait 0
+                    if
+                        80E1:   not player 0 pressed_key 6
+                    then
+                        if
+                            2@ == 0
+                        then
+                            0812: AS_actor $PLAYER_ACTOR perform_animation "swt_wllshoot_out_L" IFP_file "SWAT" 4.0 loopA 0 lockX 1 lockY 1 lockF 1 time -1
+                            32@ = 0
+                            while true
+                                wait 0
+                                if
+                                    32@ >= 1500
+                                then
+                                    break
+                                end
+
+                                if
+                                    0AB0:  key_pressed 3@
+                                then
+                                    gosub @CoverSystemQuit
+                                    wait 500
+                                    jump @Cover
+                                end
+                            end
+                            0812: AS_actor $PLAYER_ACTOR perform_animation "SWT_WLLPK_L" IFP_file "SWAT" 4.0 loopA 1 lockX 1 lockY 1 lockF 1 time -1
+                        else
+                            0812: AS_actor $PLAYER_ACTOR perform_animation "swt_wllshoot_out_R" IFP_file "SWAT" 4.0 loopA 0 lockX 1 lockY 1 lockF 1 time -1
+                            32@ = 0
+                            while true
+                                wait 0
+                                if
+                                    32@ >= 1500
+                                then
+                                    break
+                                end
+
+                                if
+                                    0AB0:  key_pressed 3@
+                                then
+                                    gosub @CoverSystemQuit
+                                    wait 500
+                                    jump @Cover
+                                end
+                            end
+                            0812: AS_actor $PLAYER_ACTOR perform_animation "SWT_WLLPK_R" IFP_file "SWAT" 4.0 loopA 1 lockX 1 lockY 1 lockF 1 time -1
+                        end
+                        break
+                    end
+                end
+            end
+
+
+
+            // PRZETURLANIE SIE ZZA OSLONY
+            if and
+                1@ == 1
+                00E1:   player 0 pressed_key 18
+            then
+                if
+                    2@ == 0
+                then
+                    1@ = 0
+                    0812: AS_actor $PLAYER_ACTOR perform_animation "CROUCH_ROLL_R" IFP_file "PED" 20.0 loopA 0 lockX 1 lockY 1 lockF 0 time -1
+                    while true
+                        wait 0
+                        if
+                            8611:   not actor $PLAYER_ACTOR performing_animation "CROUCH_ROLL_R"
+                        then
+                            04EB: AS_actor $PLAYER_ACTOR crouch 1
+                            break
+                        end
+                    end
+                else
+                    1@ = 0
+                    0812: AS_actor $PLAYER_ACTOR perform_animation "CROUCH_ROLL_L" IFP_file "PED" 20.0 loopA 0 lockX 1 lockY 1 lockF 0 time -1
+                    while true
+                        wait 0
+                        if
+                            8611:   not actor $PLAYER_ACTOR performing_animation "CROUCH_ROLL_L"
+                        then
+                            04EB: AS_actor $PLAYER_ACTOR crouch 1
+                            break
+                        end
+                    end
+                end
+            end
+        else
+            1@ = 0
+            0687: clear_actor $PLAYER_ACTOR task
+            break
+        end
+    end
+end
+
+wait 500
+jump @Cover
+
+:CoverSystemQuit
+1@ = 0
+0687: clear_actor $PLAYER_ACTOR task
+return
+
+
+
+
+
+
+
+const
+    BAGS_MissionsDone   = 0@
+    BAGS_Object         = 1@
+    BAGS_Bits           = 2@
+    BAGS_Artict         = 3@
+    BAGS_Bag            = 4@
+    BAGS_Blip           = 5@
+    BAGS_BagPosX        = 6@
+    BAGS_BagPosY        = 7@
+    BAGS_BagPosZ        = 8@
+    BAGS_LoopCounter    = 9@
+    BAGS_BagBit         = 10@
+    BAGS_BagVarID       = 11@
+    BAGS_BlipVarID      = 12@
+end
+
+
+:MoneyBags
+// $56, $76, $77, $78, $79, $80, $95, $99
+{alloc($MONEY_1,56)
+alloc($MONEY_2,76)
+alloc($MONEY_3,77)
+alloc($MONEY_4,78)
+alloc($MONEY_5,79)
+alloc($MONEY_6,80)
+alloc($MONEY_7,95)
+alloc($MONEY_8,99)  }
+0247: load_model #ARTICT1
+0247: load_model 1271
+0247: load_model 1550
+038B: load_requested_models
+0006: BAGS_MissionsDone = 0
+
+while 8029:   not BAGS_MissionsDone >= MISSION_JUMPON
+    0001: wait 250 ms
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to BAGS_MissionsDone
+end
+
+0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_OBJECT value_to BAGS_Object
+if
+    83CA:   not object BAGS_Object exists
+then
+    0107: BAGS_Object = create_object 1271 at 1659.0919189453 -1842.8295898438 12.396414756775
+    08E9: set_object BAGS_Object liftable 1
+    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_OBJECT value BAGS_Object
+end
+
+
+0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var INE_BITMASK value_to BAGS_Bits
+if
+    88B7:   not test BAGS_Bits bit BAG1_COLLECTED
+then
+    00A5: BAGS_Artict = create_car #ARTICT1 at 2041.9692382813 -1775.330078125 10.90327796936
+    0175: set_car BAGS_Artict Z_angle_to 90.0
+    0519: set_car BAGS_Artict locked 1
+
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_BAG1 value_to BAGS_Bag
+    if
+        8019:   not BAGS_Bag > 0
+    then
+        0407: store_coords_to BAGS_BagPosX BAGS_BagPosY BAGS_BagPosZ from_car BAGS_Artict with_offset 0.5 0.3 0.3
+        0213: BAGS_Bag = create_pickup 1550 type 3 at BAGS_BagPosX BAGS_BagPosY BAGS_BagPosZ
+        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_BAG1 value BAGS_Bag
+    end
+
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_ICON1 value_to BAGS_Blip
+    if
+        875C:   not marker BAGS_Blip enabled
+    then
+        04CE: BAGS_Blip = create_icon_marker_without_sphere 52 at 2041.9692382813 -1775.330078125 10.90327796936
+        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_ICON1 value BAGS_Blip
+    end
+end
+
+if
+    88B7:   not test BAGS_Bits bit BAG2_COLLECTED
+then
+    00A5: BAGS_Artict = create_car #ARTICT1 at 1530.8099365234 -1647.3217773438 3.240625
+    0175: set_car BAGS_Artict Z_angle_to 180.0
+    0519: set_car BAGS_Artict locked 1
+
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_BAG2 value_to BAGS_Bag
+    if
+        8019:   not BAGS_Bag > 0
+    then
+        0407: store_coords_to BAGS_BagPosX BAGS_BagPosY BAGS_BagPosZ from_car BAGS_Artict with_offset 0.5 0.3 0.3
+        0213: BAGS_Bag = create_pickup 1550 type 3 at BAGS_BagPosX BAGS_BagPosY BAGS_BagPosZ
+        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_BAG2 value BAGS_Bag
+    end
+
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_ICON2 value_to BAGS_Blip
+    if
+        875C:   not marker BAGS_Blip enabled
+    then
+        04CE: BAGS_Blip = create_icon_marker_without_sphere 52 at 1530.8099365234 -1647.3217773438 3.240625
+        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_ICON2 value BAGS_Blip
+    end
+end
+
+if
+    88B7:   not test BAGS_Bits bit BAG3_COLLECTED
+then
+    00A5: BAGS_Artict = create_car #ARTICT1 at 1420.0665283203 -1349.8371826172 10.915421104431
+    0519: set_car BAGS_Artict locked 1
+
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_BAG3 value_to BAGS_Bag
+    if
+        8019:   not BAGS_Bag > 0
+    then
+        0407: store_coords_to BAGS_BagPosX BAGS_BagPosY BAGS_BagPosZ from_car BAGS_Artict with_offset 0.5 0.3 0.3
+        0213: BAGS_Bag = create_pickup 1550 type 3 at BAGS_BagPosX BAGS_BagPosY BAGS_BagPosZ
+        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_BAG3 value BAGS_Bag
+    end
+
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_ICON3 value_to BAGS_Blip
+    if
+        875C:   not marker BAGS_Blip enabled
+    then
+        04CE: BAGS_Blip = create_icon_marker_without_sphere 52 at 1420.0665283203 -1349.8371826172 10.915421104431
+        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_ICON3 value BAGS_Blip
+    end
+end
+
+if
+    88B7:   not test BAGS_Bits bit BAG4_COLLECTED
+then
+    00A5: BAGS_Artict = create_car #ARTICT1 at 2158.8358398438 -1919.8586425781 10.890244102478
+    0175: set_car BAGS_Artict Z_angle_to 90.0
+    0519: set_car BAGS_Artict locked 1
+
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_BAG4 value_to BAGS_Bag
+    if
+        8019:   not BAGS_Bag > 0
+    then
+        0407: store_coords_to BAGS_BagPosX BAGS_BagPosY BAGS_BagPosZ from_car BAGS_Artict with_offset 0.5 0.3 0.3
+        0213: BAGS_Bag = create_pickup 1550 type 3 at BAGS_BagPosX BAGS_BagPosY BAGS_BagPosZ
+        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_BAG4 value BAGS_Bag
+    end
+
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_ICON4 value_to BAGS_Blip
+    if
+        875C:   not marker BAGS_Blip enabled
+    then
+        04CE: BAGS_Blip = create_icon_marker_without_sphere 52 at 2158.8358398438 -1919.8586425781 10.890244102478
+        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_ICON4 value BAGS_Blip
+    end
+end
+
+if
+    88B7:   not test BAGS_Bits bit BAG5_COLLECTED
+then
+    00A5: BAGS_Artict = create_car #ARTICT1 at 1804.3218017578 -1690.8272705078 10.883188819885
+    0175: set_car BAGS_Artict Z_angle_to 270.0
+    0519: set_car BAGS_Artict locked 1
+
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_BAG5 value_to BAGS_Bag
+    if
+        8019:   not BAGS_Bag > 0
+    then
+        0407: store_coords_to BAGS_BagPosX BAGS_BagPosY BAGS_BagPosZ from_car BAGS_Artict with_offset 0.5 0.3 0.3
+        0213: BAGS_Bag = create_pickup 1550 type 3 at BAGS_BagPosX BAGS_BagPosY BAGS_BagPosZ
+        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_BAG5 value BAGS_Bag
+    end
+
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_ICON5 value_to BAGS_Blip
+    if
+        875C:   not marker BAGS_Blip enabled
+    then
+        04CE: BAGS_Blip = create_icon_marker_without_sphere 52 at 1804.3218017578 -1690.8272705078 10.883188819885
+        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_ICON5 value BAGS_Blip
+    end
+end
+
+if
+    88B7:   not test BAGS_Bits bit BAG6_COLLECTED
+then
+    00A5: BAGS_Artict = create_car #ARTICT1 at 1681.5920410156 -1460.5729980469 10.896875
+    0175: set_car BAGS_Artict Z_angle_to 90.0
+    0519: set_car BAGS_Artict locked 1
+
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_BAG6 value_to BAGS_Bag
+    if
+        8019:   not BAGS_Bag > 0
+    then
+        0407: store_coords_to BAGS_BagPosX BAGS_BagPosY BAGS_BagPosZ from_car BAGS_Artict with_offset 0.5 0.3 0.3
+        0213: BAGS_Bag = create_pickup 1550 type 3 at BAGS_BagPosX BAGS_BagPosY BAGS_BagPosZ
+        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_BAG6 value BAGS_Bag
+    end
+
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_ICON6 value_to BAGS_Blip
+    if
+        875C:   not marker BAGS_Blip enabled
+    then
+        04CE: BAGS_Blip = create_icon_marker_without_sphere 52 at 1681.5920410156 -1460.5729980469 10.896875
+        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_ICON6 value BAGS_Blip
+    end
+end
+
+if
+    88B7:   not test BAGS_Bits bit BAG7_COLLECTED
+then
+    00A5: BAGS_Artict = create_car #ARTICT1 at 1631.0187988281 -1904.1145019531 10.902330970764
+    0519: set_car BAGS_Artict locked 1
+
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_BAG7 value_to BAGS_Bag
+    if
+        8019:   not BAGS_Bag > 0
+    then
+        0407: store_coords_to BAGS_BagPosX BAGS_BagPosY BAGS_BagPosZ from_car BAGS_Artict with_offset 0.5 0.3 0.3
+        0213: BAGS_Bag = create_pickup 1550 type 3 at BAGS_BagPosX BAGS_BagPosY BAGS_BagPosZ
+        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_BAG7 value BAGS_Bag
+    end
+
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_ICON7 value_to BAGS_Blip
+    if
+        875C:   not marker BAGS_Blip enabled
+    then
+        04CE: BAGS_Blip = create_icon_marker_without_sphere 52 at 1631.0187988281 -1904.1145019531 10.902330970764
+        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_ICON7 value BAGS_Blip
+    end
+end
+
+if
+    88B7:   not test BAGS_Bits bit BAG8_COLLECTED
+then
+    00A5: BAGS_Artict = create_car #ARTICT1 at 1657.6517333984 -1827.29296875 10.89887008667
+    0519: set_car BAGS_Artict locked 1
+
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_BAG8 value_to BAGS_Bag
+    if
+        8019:   not BAGS_Bag > 0
+    then
+        0407: store_coords_to BAGS_BagPosX BAGS_BagPosY BAGS_BagPosZ from_car BAGS_Artict with_offset 0.5 0.3 0.3
+        0213: BAGS_Bag = create_pickup 1550 type 3 at BAGS_BagPosX BAGS_BagPosY BAGS_BagPosZ
+        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_BAG8 value BAGS_Bag
+    end
+
+    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var MONEYBAGS_ICON8 value_to BAGS_Blip
+    if
+        875C:   not marker BAGS_Blip enabled
+    then
+        04CE: BAGS_Blip = create_icon_marker_without_sphere 52 at 1657.6517333984 -1827.29296875 10.89887008667
+        0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var MONEYBAGS_ICON8 value BAGS_Blip
+    end
+end
+
+0249: release_model #ARTICT1
+0249: release_model 1271
+0249: release_model 1550
+
+while true
+    0001: wait 250 ms
+
+    for BAGS_LoopCounter = 0 to 7
+        0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var INE_BITMASK value_to BAGS_Bits
+        0A8E: BAGS_BagBit = BAGS_LoopCounter + BAG1_COLLECTED
+        if
+            88B7:   not test BAGS_Bits bit BAGS_BagBit
+        then
+            0A8E: BAGS_BagVarID = BAGS_LoopCounter + MONEYBAGS_BAG1
+            0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var BAGS_BagVarID value_to BAGS_Bag
+            if
+                0019:   BAGS_Bag > 0
+            then
+                if
+                    0214:   pickup BAGS_Bag picked_up
+                then
+                    0215: destroy_pickup BAGS_Bag
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var BAGS_BagVarID value 0
+                    0A8E: BAGS_BlipVarID = BAGS_LoopCounter + MONEYBAGS_ICON1
+                    0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var BAGS_BlipVarID value_to BAGS_Blip
+                    0164: disable_marker BAGS_Blip
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var BAGS_BlipVarID value 0
+                    08BD: set BAGS_Bits bit BAGS_BagBit
+                    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var INE_BITMASK value BAGS_Bits
+
+                    0AA5: call 0x447B80 num_params 4 pop 4 flag1 0 time 5000 flag2 0 text "INE_BAG"
+                    //01E3: show_text_1number_styled GXT "INE_BAG" number 31@ time 3000 style 1
+                    0394: play_music 1
+                    0109: player 0 money += 50000
+                end
+            end
+        end
+    end
+end
+
+
+    {if
+        0214:   pickup 9@ picked_up
+    then
+        gosub @MoneyBagsSuccess
+        0164: disable_marker $MONEY_1
+        0AB3: var 331 = 1
+    end
+
+    if
+        0214:   pickup 10@ picked_up
+    then
+        gosub @MoneyBagsSuccess
+        0164: disable_marker $MONEY_2
+        0AB3: var 332 = 1
+    end
+
+    if
+        0214:   pickup 11@ picked_up
+    then
+        gosub @MoneyBagsSuccess
+        0164: disable_marker $MONEY_3
+        0AB3: var 333 = 1
+    end
+
+    if
+        0214:   pickup 12@ picked_up
+    then
+        gosub @MoneyBagsSuccess
+        0164: disable_marker $MONEY_4
+        0AB3: var 334 = 1
+    end
+
+    if
+        0214:   pickup 13@ picked_up
+    then
+        gosub @MoneyBagsSuccess
+        0164: disable_marker $MONEY_5
+        0AB3: var 335 = 1
+    end
+
+    if
+        0214:   pickup 14@ picked_up
+    then
+        gosub @MoneyBagsSuccess
+        0164: disable_marker $MONEY_6
+        0AB3: var 336 = 1
+    end
+
+    if
+        0214:   pickup 15@ picked_up
+    then
+        gosub @MoneyBagsSuccess
+        0164: disable_marker $MONEY_7
+        0AB3: var 337 = 1
+    end
+
+    if
+        0214:   pickup 16@ picked_up
+    then
+        gosub @MoneyBagsSuccess
+        0164: disable_marker $MONEY_8
+        0AB3: var 338 = 1
+    end
+
+    if and
+        0214:   pickup 9@ picked_up
+        0214:   pickup 10@ picked_up
+        0214:   pickup 11@ picked_up
+        0214:   pickup 12@ picked_up
+        0214:   pickup 13@ picked_up
+        0214:   pickup 14@ picked_up
+        0214:   pickup 15@ picked_up
+        0214:   pickup 16@ picked_up
+    then
+        01E3: show_text_1number_styled GXT "INE_BAGS" number 31@ time 5000 style 1
+    end
+end }
+
+
+
+
+
+
+:Fading
+while 016B:   fading
+    wait 0
+end
+return
+
+
+hex
+020001
+end

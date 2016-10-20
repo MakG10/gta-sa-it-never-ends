@@ -1,0 +1,198 @@
+{$CLEO .cm}
+{$INCLUDE global_header.txt}
+
+thread "tutorial"
+$ONMISSION = 1
+
+0247: load_model #AK47
+0247: load_model 1224
+038B: load_requested_models
+
+01B4: set_player $PLAYER_CHAR can_move 1
+//00A1: put_actor $PLAYER_ACTOR at 1560.0271 -1522.6492 12.5461
+
+0376: 1@ = create_random_actor_at 0.0 0.0 0.0
+0350: set_actor 1@ maintain_position_when_attacked 1
+060B: set_actor 1@ decision_maker_to 0
+01B2: give_actor 1@ weapon 30 ammo 500
+02E2: set_actor 1@ weapon_accuracy_to 1 
+01B9: set_actor 1@ armed_weapon_to 30
+
+0376: 2@ = create_random_actor_at 0.0 0.0 0.0
+0350: set_actor 2@ maintain_position_when_attacked 1
+060B: set_actor 2@ decision_maker_to 0
+01B2: give_actor 2@ weapon 30 ammo 500
+02E2: set_actor 2@ weapon_accuracy_to 1 
+01B9: set_actor 2@ armed_weapon_to 30
+
+:Position
+while true
+    wait 0
+    00BC: show_text_highpriority GXT 'TUT1' time 10 flag 1
+
+    if
+        00FF:   actor $PLAYER_ACTOR sphere 1 in_sphere 1555.2254 -1506.5887 13.0 radius 1.0 1.0 2.0 on_foot
+    then
+        :Angle
+        while true
+            wait 0
+            00BC: show_text_highpriority GXT 'TUT2' time 10 flag 1
+            0172: 3@ = actor $PLAYER_ACTOR Z_angle
+
+            if and
+                3@ > 170.0
+                3@ < 190.0
+            then
+                :Cover
+                while true
+                    wait 0
+                    00BC: show_text_highpriority GXT 'TUT3' time 10 flag 1
+                    
+                    if
+                        0611:   actor $PLAYER_ACTOR performing_animation "SWT_WLLPK_L"
+                    then
+                        00A1: put_actor 1@ at 1560.0271 -1522.6492 12.5461
+                        0575: set_actor 1@ pinned_position 0
+                        05E2: AS_actor 1@ kill_actor $PLAYER_ACTOR
+
+                        :Direction
+                        while true
+                            wait 0
+                            00BC: show_text_highpriority GXT 'TUT4' time 10 flag 1
+                            
+                            if
+                                0611:   actor $PLAYER_ACTOR performing_animation "SWT_WLLPK_R"
+                            then
+                                :PutOut
+                                while true
+                                    wait 0
+                                    00BC: show_text_highpriority GXT 'TUT5' time 10 flag 1
+                                    
+                                    if
+                                        0611:   actor $PLAYER_ACTOR performing_animation "SWT_WLLSHOOT_IN_R"
+                                    then
+                                        :Target1
+                                        0187: 4@ = create_marker_above_actor 1@
+
+                                        while true
+                                            wait 0
+                                            00BC: show_text_highpriority GXT 'TUT6' time 10 flag 1
+                                            
+                                            if
+                                                0118:   actor 1@ dead
+                                            then
+                                                0164: disable_marker 4@
+
+                                                :GetBack
+                                                while true
+                                                    wait 0
+                                                    00BC: show_text_highpriority GXT 'TUT7' time 10 flag 1
+                                                    
+                                                    if
+                                                        0611:   actor $PLAYER_ACTOR performing_animation "SWT_WLLPK_R"
+                                                    then
+                                                        :Roll
+                                                        while true
+                                                            wait 0
+                                                            00BC: show_text_highpriority GXT 'TUT8' time 10 flag 1
+                                                            
+                                                            if
+                                                                0611:   actor $PLAYER_ACTOR performing_animation "CROUCH_ROLL_L"
+                                                            then
+                                                                00A1: put_actor 2@ at 1560.0271 -1522.6492 12.1461
+                                                                05E2: AS_actor 2@ kill_actor $PLAYER_ACTOR
+                                                                0187: 4@ = create_marker_above_actor 2@
+                                                                
+                                                                0107: 5@ = create_object 1224 at 1558.15 -1508.0 12.8
+                                                                
+                                                                while true
+                                                                    wait 0
+                                                                    00BC: show_text_highpriority GXT 'TUT6' time 10 flag 1
+                                                                    if
+                                                                        0118:   actor 2@ dead
+                                                                    then
+                                                                        0164: disable_marker 4@
+                                                                        01C2: remove_references_to_actor 1@
+                                                                        01C2: remove_references_to_actor 2@
+                                                                        01C4: remove_references_to_object 5@
+
+                                                                        01E3: show_text_1number_styled GXT 'TUT9' number 0 time 5000 style 1
+                                                                        0394: play_music 1
+                                                                        break
+                                                                    end
+                                                                end
+                                                                break
+                                                            end
+                                                        end
+                                                        break
+                                                    else
+                                                    //
+                                                    end
+                                                end
+                                                break
+                                            else
+                                            //
+                                            end
+                                        end
+                                        break
+                                    else
+                                        gosub @CheckPosition
+                                        gosub @CheckCoverStatus
+                                    end
+                                end
+                                break
+                            else
+                                gosub @CheckPosition
+                                gosub @CheckCoverStatus
+                            end
+                        end
+                        break
+                    else
+                        gosub @CheckPosition
+                    end
+                end
+                break
+            end
+        end
+        break
+    end
+end
+                                                    
+$ONMISSION = 0
+end_thread                                                                
+                                    
+
+
+:CheckPosition
+if
+    00FF:   actor $PLAYER_ACTOR sphere 1 in_sphere 1555.2254 -1506.5887 13.0 radius 1.0 1.0 2.0 on_foot
+then
+    0172: 3@ = actor $PLAYER_ACTOR Z_angle
+    if and
+        3@ > 170.0
+        3@ < 190.0
+    then
+        return
+    else
+        jump @Angle
+    end
+else
+    jump @Position
+end
+
+:CheckCoverStatus
+if or
+    0611:   actor $PLAYER_ACTOR performing_animation "SWT_WLLPK_L"
+    0611:   actor $PLAYER_ACTOR performing_animation "SWT_WLLPK_R"
+then
+    return
+else
+    jump @Cover
+end
+
+{$INCLUDE mission_includes.txt}
+
+hex
+020001
+end
+// 1555.2874 -1506.5624 13.5547

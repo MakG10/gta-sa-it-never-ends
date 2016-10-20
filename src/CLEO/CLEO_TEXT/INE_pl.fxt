@@ -1,0 +1,415 @@
+#  GTA SA: It Never Ends
+#  http://www.gta-mods.pl/
+
+M1T1 Zakladnik
+M1T2 Sweet! Gdzie jestes?
+M1T3 Sweet!
+M1T4 Kurwa, moj leb...
+M1T5 Wstawaj.
+M1T6 Powiedzialem, wstawaj!
+M1T7 Witaj, Carl.
+M1T8 Co sie tu kurwa dzieje? Co zrobiliscie mojemu bratu?
+M1T9 Jeszcze nic. Nic mu nie bedzie, jesli zrobisz wszystko, co powiem.
+M1T10 Czego od nas chcesz?
+M1T11 Chciales powiedziec, co chce od CIEBIE. Niczego nie chce od Sweeta.
+M1T12 To czego kurwa chcesz ode mnie?!
+M1T13 Chce, zebys zrobil dla nas kilka rzeczy. Jesli dobrze sie spiszesz, to wypuscimy Sweeta.
+M1T14 Jakie rzeczy?
+M1T15 Rozne. Jesli ci powiem, zeby kogos zabic, to go zabijesz.
+M1T16 Jesli ci powiem, zebys cos przyniosl, to lecisz to zdobyc.
+M1T17 Jesli ci powiem, zebys umyl podloge, to myjesz jebana podloge. Kapujesz?
+M1T18 Dlaczego ja?
+M1T19 Daj spokoj. Wszyscy wiedza, kim jestes. Jestes maszyna do zabijania.
+M1T20 A co jesli nie chce robic dla ciebie tego gowna?
+M1T21 Zrobisz wszystko, co powiem, bo inaczej twoj brat zginie.
+M1T22 Zabierzemy tez twoja kase, zeby nie przyszedl ci zaden glupi pomysl do glowy.
+M1T23 No zesz kurwa...
+M1T24 Mamy juz dla ciebie pierwsza robote. Policja zabrala jedna z naszych ciezarowek. Razem z duza iloscia kokainy.
+M1T25 Masz ja zdobyc z powrotem.
+M1T26 Potrzebuje do tego swoich broni.
+M1T27 Ten gnat wystarczy.
+
+M1I1 Idz do ~y~garazu~w~.
+
+
+
+M2T1 Kokaina
+M2T2 Siema, czarnuchu. Masz ten towar?
+M2T3 Tak.
+M2T4 Co do chuja...
+
+M2I1 Idz po ~b~ciezarowke~s~.
+M2I2 Zgub policje.
+M2I3 Wracaj do ~b~ciezarowki~s~!
+M2I4 Jedz do ~y~miejscowki dealera~s~.
+M2I5 Zabij ~r~Da Nang Boys~s~!
+
+
+
+M3T1 Oko za oko
+M3T2 Przestan, kurwa. Nikogo tam nie ma.
+M3T3 To gdzie kurwa sa?
+M3T4 To bez znaczenia, szef nie moze dzis sie z toba widziec.
+M3T5 Zadzwon do niego. To jego numer: 482-821-084
+M3T6 A teraz odwroc sie.
+M3T7 Co ty odpierdalasz?
+M3T8 Odwroc sie.
+M3T9 Ale...
+M3T10 Odwroc sie kurwa!
+M3T11 To ja, Carl.
+M3T12 /Carl.
+M3T13 Ten twoj czlowiek jest nerwowy jak chuj.
+M3T14 /Mozliwe. Sluchaj, mamy kolejna robote.
+M3T15 /Wlasnie sie dowiedzialem, co zrobily te pojebance z Da Nang.
+M3T16 /Chce, zebys...
+M3T17 Czekaj, czekaj. Najpierw chce wiedziec, co ze Sweetem.
+M3T18 /A co ma byc? Jest tu z nami.
+M3T19 Chce go zobaczyc.
+M3T20 /Nie kombinuj, CJ. Zobaczysz go, jak tylko zrobisz, co do ciebie nalezy.
+M3T21 /A wtedy razem wrocicie na to jebane Grove Street.
+M3T22 /Jesli chodzi o Da Nang Boys... A, poczekaj.
+M3T23 /Prawie zapomnialem. Powiedz mojemu czlowiekowi, zeby sprawdzil, co z pieniedzmi.
+M3T24 /Bedzie wiedzial, co robic.
+M3T25 Twoj szef mowi...
+M3T26 Nie ma go.
+M3T27 /Dobra, niewazne. A teraz, wracajac do Da Nang Boys...
+M3T28 /Chce, zebys przekazal im wiadomosc, ze nie zadziera sie z Billem Degorio.
+M3T29 /Te skurwysyny powinny byc w dzielnicy Idlewood. Jedz tam i rob swoje.
+M3T30 To za Degorio!
+M3T31 Skurwysyn!
+# M3T32 Don't move or I shoot!
+M3T33 Juz nie zyjesz!
+# M3T34 No! Let's wait for boss, he will decide what to do with him.
+M3T35 Kurwa mac...
+
+
+PC1T1 Dobra robota z Da Nang Boys, Carl. Spotkaj sie z moim czlowiekiem w sklepie 24/7 niedaleko stacji kolejowej. On ci powie, co masz dalej robic.
+PC2T1 Moj czlowiek czeka na ciebie tam, gdzie ostatnio. Spotkaj sie z nim.
+
+M4T1 Skok
+M4T2 Dlaczego chciales sie tu spotkac?
+M4T3 Bo nikt nie bedzie nas obserwowac. Rozejrzyj sie. Kazdy jest zajety zakupami.
+M4T4 A co z kamera?
+M4T5 O kurwa. Nie pomyslalem o tym.
+M4T6 Jestes debilem czy co?
+M4T7 Lepiej uwazaj co kurwa mowisz, czarnuchu.
+M4T8 Niewazne...
+M4T9 Chodzmy tam. Nie bedzie nas widac.
+M4T10 Hej, wypierdalaj stad.
+M4T11 Czemu?
+M4T12 Bo tak powiedzialem. A teraz wypierdalaj!
+M4T13 Tak? Zmus mnie.
+M4T14 Nie wkurwiaj mnie.
+M4T15 Dobra, spokojnie. Juz ide.
+M4T16 On zadzwoni po psy, wiesz?
+M4T17 To co? Te jebane lenie i tak nigdy nie przyjezdzaja na czas.
+M4T18 Dobra, sluchaj. Mamy problem.
+M4T19 Jakis skurwysyn ukradl nasza kase i chce ja wywiezc z miasta.
+M4T20 Twoim zadaniem jest go zatrzymac.
+M4T21 Dobra, gdzie on jest?
+M4T22 Nie wiem dokladnie, ale uzyje tira do transportu kasy.
+M4T23 To pojedzie autostrada.
+M4T24 Dokladnie.
+M4T25 Dobra, musisz sie zbierac. Nie masz za duzo czasu.
+M4T26 Zadzwon do mnie, jak ja zdobedziesz.
+M4T27 Kurwa mac!
+
+M4I1 Idz na ~y~most~w~.
+M4I2 Zaczekaj na ciezarowke i wskocz na nia w odpowiednim momencie.
+M4I3 TERAZ!
+M4I4 Uderz w przyczepe, aby sie do niej dostac.
+M4I5 Podnies torby z pieniedzmi wciskajac ENTER/F.
+M4I6 Wyrzuc pieniadze z ciezarowki wciskajac ENTER/F.
+M4I7 Zgub policje.
+M4I8 Podnies ~g~torby~w~.
+
+M4T28 Mam kase. Co teraz?
+M4T29 Ukryj je na parkingu niedaleko autostrady.
+
+
+TIP5 Wejdz do samochodu, aby aktywowac misje.
+
+
+M5T1 Wysadz ich
+M5T2 Musisz ukrasc jeden woz i... powiedzmy, zaskoczyc Da Nang Boys.
+M5T3 Najpierw chce pogadac z bratem.
+M5T4 Koniec z tymi jebanymi rozmowami do czasu, az wykonasz robote.
+M5T5 Dzwon do niego! Chce wiedziec, czy jeszcze zyje.
+M5T6 Bo inaczej nie bede robil dla was zadnego chujstwa!
+M5T7 Dobra, uspokoj sie kurwa. Zadzwonie do nich, masz tylko kilka sekund.
+M5T8 Daj tego jebanego czarnucha do telefonu. Niewazne dlaczego, po prostu daj go do tego jebanego telefonu!
+M5T9 Sweet? Jestes caly?
+M5T10 Jebany czarnuch, powinienem go juz zabic.
+M5T11 Dobra, niedlugo to sie skonczy. To powinna byc ostatnia robota.
+M5T12 Czas minal. Dawaj ten telefon.
+M5T13 To co mam robic?
+M5T14 Musisz ukrasc jeden woz i wysadzic Da Nang Boys.
+M5T15 Jeden koles testuje samochod dla laski swojego kumpla.
+M5T16 To rozowy Buffalo, wiec nie ma chuja, zebys go nie znalazl.
+M5T17 Jak juz znajdziesz ten samochod, zabij kierowce i jedz do 8-balla, zeby podlozyl ladunki wybuchowe.
+M5T18 Kiedy samochod bedzie gotowy, zawiez go do Da Nang Boys. Powinni byc niedaleko torow kolejowych.
+M5T19 Wysadz samochod w odpowiednim momencie i zabij tych, ktorzy przezyja.
+M5T20
+M5T21
+M5T22 To od chuja roboty.
+M5T23 Zamknij ryj i bierz sie do pracy. Wroc tu, kiedy skonczysz.
+M5T24 Mam woz dla twojej laski.
+M5T25 Jest dobry?
+M5T26 Tak.
+M5T27 Dobra, dzieki.
+
+M5T28 Prosze, prosze. Kogo my tu mamy.
+M5T29 Czy to nie chloptas Billa?
+M5T30 Powiesz cos, skurwysynie?
+
+M5I1 Znajdz rozowego Buffalo w dzielnicy Willefield.
+M5I2 Zabij ~r~kierowce~w~!
+M5I3 Jedz do ~y~8-balla~w~, zeby podlozyc ladunki.
+M5I4 Jedz ~y~do miejsca spotkania~w~ z Da Nang Boys.
+M5I5 Odsun sie.
+M5I6 Zabij reszte gosci z ~r~Da Nang Boys~w~.
+M5I7 Zgub policje.
+M5I8 Wracaj na ~y~parking~w~.
+M5I9 Opusc teren.
+M5I10 Wejdz do ~b~samochodu~w~.
+
+
+
+PC3T1 Ty tepy skurwysynie! Jestes bezuzyteczny, Carl! Moj czlowiek zginal przez ciebie!
+PC3T2 To nie byla moja...
+PC3T3 Zamknij ryj, bezuzyteczny smieciu!
+PC3T4 I wiesz co? Pozegnaj sie ze swoim pierdolonym bratem.
+PC3T5 Nie, czekaj, czekaj. Bill! Bill!
+PC3T6 KURWA! KURWA!
+PC3T7 CJ, stary. Potrzebuje pomocy!
+PC3T8 Ucieklem. Chcieli mnie kurwa zabic.
+PC3T9 Gdzie jestes?
+PC3T10 Niedaleko tego garazu, pod autostrada. Pospiesz sie kurwa!
+
+
+
+M6T1 Ratunek
+M6T2 Gdzie jestes, Sweet?
+M6T3 Dawaj, dawaj, dawaj! Scigaja nas!
+M6T4 Mozemy ich zgubic w tunelach.
+M6T5 Lap sie za kierownice, Sweet!
+M6T6 Musimy wyskoczyc!
+M6T7 Nie ma kurwa ch...
+M6T8 TERAZ!
+M6T9 Skacz do wody, CJ!
+M6T10 Udalo nam sie, stary. Udalo sie.
+M6T11 No.
+M6T12 Dobra, wracajmy do domu, CJ.
+M6T13 Nie mozemy wrocic do domu. Znajda nas tam.
+M6T14 To co my teraz kurwa zrobimy?
+M6T15 Znam jeden hotel w centrum. Pojedziemy tam i wtedy cos wymyslimy.
+M6T16 Dobra.
+
+M6I1 Musisz miec samochod z conajmniej dwoma miejscami.
+M6I2 Wskocz razem ze ~b~Sweetem~w~ do wody.
+M6I3 Sprobuj ich zgubic w ~y~kanalach~w~.
+
+M6F1 Sweet nie zyje!
+
+
+
+M7T1 Hotel
+M7T2 Sweet, musimy stad spierdalac!
+M7T3 Woozie, potrzebuje helikoptera!
+M7T4 Gdzie?
+M7T5 Hotel w centrum Los Santos.
+M7T6 Mam czlowieka niedaleko, zaraz tam bedzie.
+M7T7 Sweet, helikopter juz leci. Musimy ich odeprzec.
+M7T8 Wsiadaj do helikoptera, bo ci leb odstrzele!
+M7T9 Na co ci on?
+M7T10 Chce znalezc Billa Degorio.
+M7T11 Gdzie on jest, ty skurwysynie?
+M7T12 Pierdol sie!
+M7T13 Kurwa!
+M7T14 Gdzie jest Bill Degorio?!
+M7T15 Kurwa, jedzie zabrac jakies rzeczy z tamtego garazu.
+M7T16 Tego, w ktorym trzymali Sweeta?
+M7T17 Tak.
+M7T18 Nie! Nie rob tego!
+M7T19 Wyglada na to, ze mamy ogon.
+M7T20 Zejdz troche nizej, zlikwiduje ich.
+M7T21 Dobra, to koniec. Zabierzesz nas do Ganton?
+M7T22 Jasne.
+M7T23 Dobra, dzieki za przelot. Uratowales nas.
+M7T24 Na razie.
+M7T25 Nara.
+M7T26 To co teraz?
+M7T27 Zakonczymy to raz na zawsze.
+M7T28 Dobra. Wpadnij do mnie, jak bedziesz gotowy.
+
+M7I1 SWEET
+M7I2 Zaczekaj, az helikopter wyladuje.
+M7I3 Zabij tylko jednego z nich. Wez drugiego jako zakladnika
+M7I4 Wyceluj w zakladnika.
+M7I5 Wsiadz do ~b~helikoptera~w~.
+M7I6 Zniszcz ~r~samochody~w~.
+
+M7F1 Sweet nie zyje!
+M7F2 Miales zabic tylko jednego z nich!
+
+
+
+
+M8T1 Wykoncz Go!
+M8T2 Gotowy?
+M8T3 Tak, jestem gotowy.
+M8T4 To chodzmy. Juz rozmawialem z ziomalami.
+M8T5 Dobra, ludzie. Jedziemy!
+M8T6 Mam nadzieje, ze sobie poradza.
+M8T7 Rzuc bron!
+M8T8 Wycofaj sie, bo zajebie twojego brata.
+M8T9 Bron na ziemie, juz!
+M8T10 Kurwa, stary. Policja jest wszedzie.
+M8T11 Wezmy ich ubrania, zebysmy mogli stad spierdolic.
+M8T12 Co sie stalo?
+M8T13 Jakies jebane swiry strzelaja do siebie.
+M8T14 Ilu ich jest?
+M8T15 Nie wiem, ze trzech.
+M8T16 Dobra, idzcie do czwartej jednostki, zabiora was do szpitala.
+M8T17 Nie mozemy po prostu zostawic naszych ludzi.
+M8T18 Nie zostawiamy ich. Odbijemy ich.
+M8T19 Odbijemy ich.
+
+M8I1 Jedz do ~y~garazu~w~.
+M8I2 Zabij ich wszystkich!
+M8I4 Wejdz do srodka garazu.
+M8I5 Znajdz Billa Degorio i zabij go.
+M8I6 Zabij Billa Degorio.
+M8I7 Wez uniformy jednostki SWAT.
+M8I8 Wyjdz z garazu.
+M8I9 Wsiadz do ~b~samochody~w~.
+M8I10 Jedz z powrotem na ~y~Grove Street~w~.
+M8I11 Jedz do ~y~garazu Billa Degorio~w~.
+M8I12 Zabij jednostke SWAT.
+M8I13 Zaczekaj na ~b~Sweeta~w~.
+
+
+INE_m It Never Ends
+INE_m0 Opcje
+INE_m1 Misje
+INE_m2 Unikalne Skoki
+INE_m3 Autorzy
+INE_m4 Dodatkowe misje
+
+INE_m01 Glosy
+INE_m02 Dzwiek przestrzenny
+INE_m03 System Oslon
+INE_m04 Autosave'y
+
+INE_d01 Wlacz lub wylacz glosy postaci w grze.
+INE_d02 Wlacz lub wylacz dzwiek przestrzenny glosow postaci. Moze to rozwiazac problem z cichym dzwiekiem.
+INE_d03 Wlacz lub wylacz system oslon.
+INE_d04 Wlacz lub wylacz autosave'y dla misji z "It Never Ends".
+
+INE_m41 Wejdz na "www.gta-mods.pl/ine-extras", zeby pobrac dodatkowe misje.
+
+INE_st Status
+INE_on Tak
+INE_off Nie
+
+ME1T1 Porwanie
+ME2T1 Da Nang Cioty
+ME3T1 Odbierz to
+
+INE_0 ~1~
+
+TUT1 Idz do zaznaczonego punktu.
+TUT2 Obroc sie przodem do sciany.
+TUT3 Wcisnij Q, zeby wlaczyc lub wylaczyc tryb krycia sie.
+TUT4 Przesun sie w lewo lub prawo, aby zmienic kierunek wychylania sie.
+TUT5 Przytrzymaj klawisz CELOWANIA, aby wyjsc zza oslony.
+TUT6 Zabij cel.
+TUT7 Wroc za oslone (przestan trzymac klawisz CELOWANIA)
+TUT8 Teraz wcisnij klawisz kucania (~k~~PED_DUCK~), zeby zrobic przewrot zza oslony.
+TUT9 Tutorial ukonczony
+
+INEH1 Czy chcesz pozostawic glosy postaci wlaczone? (~k~~CONVERSATION_YES~ - Tak, ~k~~CONVERSATION_NO~ - Nie)
+INEH2 Czy chcesz wlaczyc dzwiek przestrzenny glosow postaci? (moze nie dzialac dla kazdego). (~k~~CONVERSATION_YES~ - Tak, ~k~~CONVERSATION_NO~ - Nie)
+INEH3 W Los Santos jest 8 nowych Unikalnych Skokow z losowymi zdarzeniami. Mozesz sprawdzic ich polozenie w MENU, obok domu CJa.
+INEH4 "It Never Ends" dodaje tez System Oslon. Czy chcesz uruchomic tutorial? (~k~~CONVERSATION_YES~ - Tak, ~k~~CONVERSATION_NO~ - Nie)
+INEH5 Od teraz, w Los Santos jest 8 toreb z pieniedzmi do zebrania. Mozesz sprawdzic ich lokacje na mapie gry (ikonka dolara).
+INEH6 Mozesz pobrac wiecej modyfikacji z http://www.gta-mods.pl/
+INEH7 Mozesz powtorzyc kazda misje z "It Never Ends" przy pomocy menu obok domu CJa.
+INEH8 Czy chcesz wlaczyc autosave'y po misjach z "It Never Ends"? (~k~~CONVERSATION_YES~ - Tak, ~k~~CONVERSATION_NO~ - Nie)
+
+INE_BAG Zebrano Torbe
+INE_BAGS Wszystkie Torby Zebrane
+
+CRED000 GTA Mods ZONE (http://www.gta-mods.pl)
+CRED001 Nadzorca Modyfikacji
+CRED002 MakG
+CRED003 Scenariusz i Dialogi
+CRED004 MakG
+CRED005 Wykonanie Misji
+CRED006 MakG (7 misji)
+CRED007 LotNICK (1 misja)
+CRED008 Unikalne Skoki
+CRED009 MakG
+CRD009A System Oslon
+CRD009B MakG
+CRD009C  
+CRD009D  
+CRED019 Torby z pieniedzmi do zebrania
+CRED020 MakG, Silent
+CRED010  
+CRED011  
+CRED012 Glosy glownych postaci
+CRED013 Carl 'CJ' Johnson - Kuba Waliczek
+CRED014 Sweet - CaptainFalcon
+CRED015 Bill Degorio - CaptainFalcon
+CRED016 Glosy postaci pobocznych
+CRED017 Dealer - krolikk
+CRED018 Bill's man - MakG
+CRED028  
+CRED029 Shopper - Frixion
+CRED030  
+CRED031 Woozie's friend
+CRED032  
+CRED033  
+CRED034 FBI agent - Christoffer Moen
+CRED035  
+CRED036  
+CRED047  
+CRED048  
+CRED049 Grafika
+CRED050 MakG
+CRED051 Przemyslaw 'primo' Lament
+CRED052  
+CRED053  Strona Internetowa
+CRED054  http://www.gta-mods.pl/
+CRED055  Specjalne podziekowania
+CRED056  Silent
+CRED057  Rosman
+CRED060  
+CRED021  
+CRED022  
+CRED023  
+CRED024  
+CRED025  
+CRED026  
+CRED027  
+CRED069  
+CRED070  
+CRED071  
+CRED072  
+CRED073  
+CRED074  
+CRED075  
+CRED076  
+
+
+CRED058  
+CRED059  
+CRED061  
+CRED062  
+CRED063  
+CRED064  
+CRED065  
+CRED066  
+CRED067  
+CRED068  

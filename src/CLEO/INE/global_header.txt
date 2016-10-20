@@ -1,0 +1,64 @@
+const
+    // Prywatne zmienne globalne
+    INE_BITMASK             = 0
+    MISSION_MARKER          = 1
+    PASSED_MISSIONS         = 2
+    TOTAL_BAGS_COLLECTED    = 3
+    MONEYBAGS_OBJECT        = 4
+    MONEYBAGS_ICON1         = 5
+    MONEYBAGS_ICON2         = 6
+    MONEYBAGS_ICON3         = 7
+    MONEYBAGS_ICON4         = 8
+    MONEYBAGS_ICON5         = 9
+    MONEYBAGS_ICON6         = 10
+    MONEYBAGS_ICON7         = 11
+    MONEYBAGS_ICON8         = 12
+    MONEYBAGS_BAG1          = 13
+    MONEYBAGS_BAG2          = 14
+    MONEYBAGS_BAG3          = 15
+    MONEYBAGS_BAG4          = 16
+    MONEYBAGS_BAG5          = 17
+    MONEYBAGS_BAG6          = 18
+    MONEYBAGS_BAG7          = 19
+    MONEYBAGS_BAG8          = 20
+    
+    // --------------------------------------
+    
+    // Bity do INE_BITMASK
+    FIRST_RUN_BIT       = 0
+    VOICES_BIT          = 1
+    SURROUND_VOICE_BIT  = 2
+    COVER_SYSTEM_BIT    = 3
+    AUTOSAVES_BIT        = 4
+    
+    // Tablica 8 flag z zebranymi torbami
+    BAG1_COLLECTED      = 15
+    BAG2_COLLECTED      = 5
+    BAG3_COLLECTED      = 6
+    BAG4_COLLECTED      = 7
+    BAG5_COLLECTED      = 8
+    BAG6_COLLECTED      = 9
+    BAG7_COLLECTED      = 10
+    BAG8_COLLECTED      = 11
+    
+    // Rozmowy telefoniczne
+    CALL1_DONE          = 12
+    CALL2_DONE          = 13
+    CALL3_DONE          = 14
+    
+    
+    // --------------------------------------
+    
+    // Enumeratory do PASSED_MISSIONS
+    MISSION_NOTHING     = 0
+    MISSION_HOSTAGE     = 1
+    MISSION_COCAINE     = 2
+    MISSION_EYE4EYE     = 3
+    MISSION_JUMPON      = 4
+    MISSION_BLOWIT      = 5
+    MISSION_RESCUE      = 6
+    MISSION_HOTEL       = 7
+    MISSION_FINALE      = 8   
+    CREDITS             = 9
+   
+end

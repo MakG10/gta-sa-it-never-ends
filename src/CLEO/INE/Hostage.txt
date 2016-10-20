@@ -1,0 +1,828 @@
+{$CLEO .cm}
+{$INCLUDE global_header.txt}
+
+:Mission
+thread 'Hostage'
+$ONMISSION = 1
+
+0050: gosub @Mission_Start
+if
+ 0112: wasted_or_busted // mission only
+then
+ 0050: gosub @Mission_Failed
+end
+0050: gosub @Mission_Cleanup
+//0ACD: show_text_highpriority "test" time 10000
+
+$ONMISSION = 0
+end_thread
+
+
+:Mission_Start
+Player.CanMove($PLAYER_CHAR) = False
+0390: load_txd_dictionary 'ine'
+038F: load_texture "ine" as 1
+
+fade 0 1500
+
+Model.Load(1814)
+Model.Load(2894)
+Model.Load(124)
+Model.Load(#GREENWOO)
+Model.Load(#BAT)
+
+gosub @Mission_Fading
+
+while true
+    if or
+        not Model.Available(1814)
+        not Model.Available(2894)
+        not Model.Available(124)
+        not Model.Available(#GREENWOO)
+        not Model.Available(#BAT)
+    jf break
+    wait 0
+end
+
+
+03F0: enable_text_draw 1
+03E3: set_texture_to_be_drawn_antialiased 1
+
+55@ = 1
+while 55@ < 255
+    038D: draw_texture 1 position 320.0 220.0 size 400.0 400.0 RGBA 200 200 200 55@
+
+    55@ += 4
+    wait 0
+end
+
+55@ = 255
+while 55@ > 0
+    038D: draw_texture 1 position 320.0 220.0 size 400.0 400.0 RGBA 200 200 200 55@
+
+    55@ -= 4
+    wait 0
+end
+wait 100
+//32@ = 0
+//while true
+//    wait 0
+//    038D: draw_texture 1 position 320.0 220.0 size 400.0 400.0 RGBA 200 200 200 255
+//
+//    if
+//        32@ >= 2000
+//    then
+//        break
+//    end
+//end
+
+0707: start_scene_skip_to @Cutscene1_skip
+
+//jump @next
+
+2@ = Object.Create(1814, 2534.9426, -1674.65, 1014.4986)
+Object.Angle(2@) = 90.2409
+3@ = Object.Create(2894, 2534.3896, -1674.1675, 1015.0)
+Object.Angle(3@) = 90.2409
+
+0860: link_actor $PLAYER_ACTOR to_interior 1
+select_interior 1
+Actor.PutAt($PLAYER_ACTOR, 2525.7852, -1679.4694, 1015.4986)
+Actor.Angle($PLAYER_ACTOR) = 261.7574
+Camera.SetPosition(2532.8425, -1678.5107, 1015.4986, 0.0, 0.0, 0.0)
+Camera.PointAt(2529.4607, -1679.6826, 1015.4986, 2)
+01B9: set_actor $PLAYER_ACTOR armed_weapon_to 0
+02A3: enable_widescreen 1
+wait 1000
+fade 1 1500
+
+//gosub @Mission_Fading
+
+0925: restore_camera_to_user_defined
+092F: lock_camera_target_point 1
+0930: lock_camera_position 1
+0936: set_camera 2532.8425 -1678.5107 1015.4986 position_to 2532.8403 -1680.7465 1015.4986 time 4000 drop_mode 1
+0920: point_camera 2529.4607 -1679.6826 1015.4986 transverse_to 2529.0 -1679.0 1014.70 time 4000 mode 1
+05D3: AS_actor $PLAYER_ACTOR goto_point 2529.4607 -1679.6826 1015.4986 mode 4 3000 ms // versionA
+
+00BC: show_text_highpriority GXT 'M1T2' time 2150 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\cj\m1t2.mp3"
+ 0AAD: set_audiostream 250@ perform_action 1
+
+:MisjaZakladnikIntro_0
+wait 0
+if
+00ED:   actor $PLAYER_ACTOR 0 near_point 2529.4607 -1679.6826 radius 0.5 0.5 on_foot
+jf @MisjaZakladnikIntro_0
+
+06A9: AS_actor $PLAYER_ACTOR look_at_point 2529.8274 -1680.8107 1015.4986 1500 ms
+wait 1500
+06A9: AS_actor $PLAYER_ACTOR look_at_point 2532.7703 -1679.1632 1015.4986 1000 ms
+wait 1000
+06A9: AS_actor $PLAYER_ACTOR look_at_point 2533.7944 -1674.2659 1015.4986 -1 ms
+wait 1000
+05D3: AS_actor $PLAYER_ACTOR goto_point 2530.2578 -1676.7074 1015.4986 mode 4 3000 ms // versionA
+
+
+
+0AAE: release_audiostream 250@
+
+
+
+
+092F: lock_camera_target_point 1
+0930: lock_camera_position 1
+0936: set_camera 2533.9651 -1672.0856 1015.4986 position_to 2537.7664 -1673.3672 1015.4986 time 15000 drop_mode 1
+0920: point_camera 2529.4607 -1679.6826 1015.4986 transverse_to 2530.2578 -1676.7074 1015.4986 time 15000 mode 1
+
+:MisjaZakladnikIntro_1
+wait 0
+if
+00ED:   actor $PLAYER_ACTOR 0 near_point 2530.2578 -1676.7074 radius 0.5 0.5 on_foot
+jf @MisjaZakladnikIntro_1
+
+{00BC: show_text_highpriority GXT 'M1T3' time 2000 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\cj\m1t3.mp3"
+ 0AAD: set_audiostream 250@ perform_action 1}
+
+06A9: AS_actor $PLAYER_ACTOR look_at_point 2533.6587 -1674.8822 1015.4986 2000 ms
+wait 2000
+06A9: AS_actor $PLAYER_ACTOR look_at_point 2527.5818 -1674.6362 1015.4986 2000 ms
+wait 2000
+05D3: AS_actor $PLAYER_ACTOR goto_point 2533.043 -1676.5002 1015.4986 mode 4 3000 ms // versionA
+06A9: AS_actor $PLAYER_ACTOR look_at_point 2533.7949 -1674.3932 1015.4986 2000 ms
+
+:MisjaZakladnikIntro_2
+wait 0
+if
+00ED:   actor $PLAYER_ACTOR 0 near_point 2533.043 -1676.5002 radius 0.5 0.5 on_foot
+jf @MisjaZakladnikIntro_2
+
+05D3: AS_actor $PLAYER_ACTOR goto_point 2533.7949 -1674.3932 1015.4986 mode 4 3000 ms // versionA
+06A9: AS_actor $PLAYER_ACTOR look_at_point 2534.3896 -1674.1675 1015.0 2000 ms
+
+:MisjaZakladnikIntro_3
+wait 0
+if
+00ED:   actor $PLAYER_ACTOR 0 near_point 2533.7949 -1674.3932 radius 0.5 0.5 on_foot
+jf @MisjaZakladnikIntro_3
+
+06A9: AS_actor $PLAYER_ACTOR look_at_point 2534.3896 -1674.1675 1015.0 -1 ms
+
+if
+    0AAB:   file_exists "CLEO\CLEO_TEXT\INE_pl.fxt"
+then
+    038F: load_texture "letter_pl" as 2
+else
+    038F: load_texture "letter_en" as 2
+end
+
+wait 2000
+
+32@ = 0
+while 32@ < 8000
+    wait 0
+    03E3: set_texture_to_be_drawn_antialiased 1
+    038D: draw_texture 2 position 320.0 200.0 size 500.0 250.0 RGBA 150 150 150 255
+end
+
+:Cutscene1_skip
+00BE: text_clear_all
+0701: end_scene_skip
+03F0: enable_text_draw 1
+
+//wait 2000
+fade 0 1500
+
+gosub @Mission_Fading
+
+0391: release_textures
+
+092F: lock_camera_target_point 0
+0930: lock_camera_position 0
+0936: set_camera 2533.9651 -1672.0856 1015.4986 position_to 2537.7664 -1673.3672 1015.4986 time 0 drop_mode 1
+0920: point_camera 2529.4607 -1679.6826 1015.4986 transverse_to 2530.2578 -1676.7074 1015.4986 time 0 mode 1
+Camera.Restore_WithJumpCut()
+02A3: enable_widescreen 0
+0860: link_actor $PLAYER_ACTOR to_interior 0
+select_interior 0
+Actor.PutAt($PLAYER_ACTOR, 2515.07, -1673.98 , 12.71)
+Actor.Angle($PLAYER_ACTOR) = 83.3475
+Camera.SetBehindPlayer()
+0108: destroy_object 2@
+0108: destroy_object 3@
+0395: clear_area 1 at 2508.5793 -1669.8733 13.3821 radius 50.0
+0674: set_car_model #GREENWOO numberplate "GROVE4L_"
+$SWEET_CAR = Car.Create(#GREENWOO, 2516.835, -1672.5485, 13.6701)
+0229: set_car $SWEET_CAR primary_color_to 59 secondary_color_to 34
+Car.Angle($SWEET_CAR) = 63.6141
+Car.RemoveReferences($SWEET_CAR)
+wait 1000
+fade 1 1500
+
+//:MisjaZakladnikIntro_5
+//wait 0
+//if
+//816B:   not fading
+//jf @MisjaZakladnikIntro_5
+//
+Player.CanMove($PLAYER_CHAR) = True
+018A: 50@ = create_checkpoint_at 1576.063 -1475.0518 14.2247
+03BC: 51@ = create_sphere_at 1576.263 -1475.0518 14.2247 radius 1.2
+00BC: show_text_highpriority GXT 'M1I1' time 5000 flag 1
+//jump @next
+:MisjaZakladnikIntro_6
+wait 0
+if
+ 00FF:   actor $PLAYER_ACTOR sphere 0 in_sphere 1576.063 -1475.0518 14.2247 radius 1.2 1.2 2.0 on_foot
+jf @MisjaZakladnikIntro_6
+
+:next
+Player.CanMove($PLAYER_CHAR) = False
+Marker.Disable(50@)
+03BD: destroy_sphere 51@
+
+fade 0 1500
+
+gosub @Mission_Fading
+
+048F: actor $PLAYER_ACTOR remove_weapons
+
+010B: 10@ = player $PLAYER_CHAR money
+
+if
+    10@ > 0
+then
+    11@ = 0
+    0062: 11@ -= 10@
+    0109: player $PLAYER_CHAR money += 11@
+end
+
+02A3: enable_widescreen 1
+
+Model.Load(#SILENCED)
+0860: link_actor $PLAYER_ACTOR to_interior 1
+select_interior 1
+Actor.PutAt($PLAYER_ACTOR, 626.7997, -11.3249, 1000.9219)
+Actor.Angle($PLAYER_ACTOR) = 78.8899
+Camera.SetPosition(625.39, -7.507, 1000.9219, 0.0, 0.0, 0.0)
+Camera.PointAt(626.7997, -11.3249, 1000.9219, 2)
+21@ = Actor.Create(CivMale, 124, 627.303, -7.9633, 1000.9219)
+04EB: AS_actor 21@ crouch 1
+01B2: give_actor 21@ weapon 5 ammo 1
+01B9: set_actor 21@ armed_weapon_to 5
+04ED: load_animation "BASEBALL"
+04ED: load_animation "CRACK"
+04ED: load_animation "INE"
+wait 1000
+0707: start_scene_skip_to @MisjaZakladnik_Scene_2_Skip
+fade 1 1000
+
+while 016B:   fading
+    wait 0
+end
+
+092F: lock_camera_target_point 1
+0930: lock_camera_position 1
+0936: set_camera 625.39 -7.507 1000.9219 position_to 621.8438 -7.8721 1000.9219 time 5000 drop_mode 1
+0920: point_camera 626.7997 -11.3249 1000.9219 transverse_to 624.0518 -10.8223 1000.9219 time 5000 mode 1
+wait 1000
+05D3: AS_actor $PLAYER_ACTOR goto_point 624.0518 -10.8223 1000.9219 mode 4 3000 ms // versionA
+
+:MisjaZakladnikIntro_9
+wait 0
+if and
+ 00ED:   actor $PLAYER_ACTOR 0 near_point 624.0518 -10.8223 radius 0.5 0.5 on_foot
+ 8934:   not camera_target_point_manipulated
+jf @MisjaZakladnikIntro_9
+
+06A9: AS_actor $PLAYER_ACTOR look_at_point 622.5372 -14.7125 1000.9219 3000 ms
+wait 3000
+06A9: AS_actor $PLAYER_ACTOR look_at_point 621.5845 -8.0418 1000.9219 3000 ms
+wait 2000
+0920: point_camera 624.0518 -10.8223 1000.9219 transverse_to 625.7131 -10.1449 1000.9219 time 3000 mode 1
+05D3: AS_actor 21@ goto_point 624.8801 -10.0799 1000.9219 mode 4 3000 ms // versionA
+
+:MisjaZakladnikIntro_10
+wait 0
+if
+ 00ED:   actor 21@ 0 near_point 624.8801 -10.0799 radius 1.0 1.0 on_foot
+jf @MisjaZakladnikIntro_10
+
+0639: AS_actor 21@ rotate_to_actor $PLAYER_ACTOR
+04EB: AS_actor 21@ crouch 0
+0605: actor 21@ perform_animation_sequence "Bat_3" IFP_file "BASEBALL" 4.0 loop 1 0 0 0 time 1000 // versionA
+0639: AS_actor $PLAYER_ACTOR rotate_to_actor 21@
+wait 700
+0605: actor $PLAYER_ACTOR perform_animation_sequence "Bat_Hit_3" IFP_file "BASEBALL" 4.0 loop 1 0 0 0 time 1000 // versionA
+wait 1000
+
+//0169: set_fade_color_RGB 255 255 255
+fade 0 0
+Actor.PutAt($PLAYER_ACTOR, 608.9557, -20.9195, 1000.9218)
+Actor.Angle($PLAYER_ACTOR) = 350.5351
+
+:test
+Model.Load(#MICRO_UZI)
+Model.Load(166)
+Model.Load(125)
+Model.Load(1721)
+023C: load_special_actor 'SWEET' as 1
+038B: load_requested_models
+
+:MisjaZakladnikIntro_11
+wait 0
+if and
+ Model.Available(#MICRO_UZI)
+ Model.Available(#SILENCED)
+ Model.Available(166)
+ Model.Available(125)
+ Model.Available(1721)
+ 023D:   special_actor 1 loaded
+jf @MisjaZakladnikIntro_11
+
+22@ = Actor.Create(CivMale, 124, 606.2086, -11.7246, 1000.9084)
+Actor.Angle(22@) = 233.3473
+01B2: give_actor 22@ weapon 28 ammo 1000
+01B9: set_actor 22@ armed_weapon_to 28
+0667: AS_actor 22@ aim_at 608.9557 -13.9195 1000.1218 -1 ms
+//0635: AS_actor 22@ aim_at_actor $PLAYER_ACTOR -1 ms
+
+//25@ = Actor.Create(CivMale, 7, 606.371, -6.0351, 1000.9054)
+//Actor.Angle(25@) = 180.0803
+//01B2: give_actor 25@ weapon 28 ammo 1000
+//01B9: set_actor 25@ armed_weapon_to 28
+
+23@ = Actor.Create(CivMale, 166, 606.7064, -8.6062, 1000.9053)
+
+Actor.Angle(23@) = 175.0
+24@ = Actor.Create(CivMale, 125, 608.8477, -6.0941, 1000.9211)
+
+Actor.Angle(24@) = 178.8269
+01B2: give_actor 24@ weapon 28 ammo 1000
+01B9: set_actor 24@ armed_weapon_to 28
+
+Model.Destroy(#MICRO_UZI)
+Model.Destroy(21)
+Model.Destroy(1721)
+
+30@ = Object.Create(1721, 607.6056, -8.5604, 999.799)
+Object.Angle(30@) = 178.8269
+
+$ACTOR_SWEET = Actor.Create(CivMale, #SPECIAL01, 607.5778, -9.2867, 1002.9153)
+Actor.Angle($ACTOR_SWEET) = 178.8269
+//0605: actor $PLAYER_ACTOR perform_animation_sequence "FIGHTA_G" IFP_file "PED" 4.0 loop 1 0 0 0 time -1 // versionA
+wait 1000
+0605: actor $ACTOR_SWEET perform_animation_sequence "sit_tiedup" IFP_file "INE" 4.0 loop 1 0 0 0 time -1 // versionA
+wait 2000
+
+092F: lock_camera_target_point 0
+0930: lock_camera_position 0
+Camera.SetPosition(608.9557, -13.9195, 1000.1218, 0.0, 0.0, 0.0)
+Camera.PointAt(608.9557, -13.6195, 1005.9218, 2)
+
+0169: set_fade_color_RGB 0 0 0
+
+fade 1 1000
+wait 500
+fade 0 500
+wait 1000
+
+fade 1 4000
+0920: point_camera 608.9557 -13.9195 1005.9218 transverse_to 612.9557 -11.9195 1001.9218 time 5000 mode 1
+wait 2000
+fade 0 2000
+wait 1000
+fade 1 4000
+wait 1000
+fade 0 2000
+wait 1000
+
+0920: point_camera  612.9557 -11.9195 1001.9218 transverse_to 606.9557 -11.9195 1001.9218 time 8000 mode 1
+fade 1 3000
+wait 500
+fade 0 2000
+wait 1000
+fade 1 6000
+wait 2000
+fade 0 2000
+
+00BC: show_text_highpriority GXT 'M1T4' time 2000 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\cj\m1t4.mp3"
+ 0AAD: set_audiostream 250@ perform_action 1
+
+wait 1000
+fade 1 2000
+wait 500
+fade 0 2000
+wait 1000
+fade 1 4000
+wait 2000
+
+
+
+0AAE: release_audiostream 250@
+
+
+
+07CD: AS_actor 24@ walk_to 608.9557 -12.7195 1000.9218 stop_with_angle 178.0 within_radius 0.5
+
+0920: point_camera  606.9557 -11.9195 1001.9218 transverse_to 608.9557 -6.6195 1005.9218 time 2000 mode 1
+fade 0 2000
+wait 1000
+fade 1 5000
+wait 500
+fade 0 1000
+wait 500
+
+092F: lock_camera_target_point 1
+0920: point_camera  608.9557 -6.6195 1005.9218 transverse_to 608.9557 -9.6195 1005.9218 time 2000 mode 1
+fade 1 10000
+wait 1000
+
+:MisjaZakladnikIntro_WalkCheck
+wait 0
+if
+ 00F0:   actor 24@ 0 near_point 608.9557 -13.9195 radius 2.0 2.0 stopped_on_foot
+jf @MisjaZakladnikIntro_WalkCheck
+
+wait 500
+
+00BC: show_text_highpriority GXT 'M1T5' time 1000 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\man\m1t5.mp3"
+ //0AC4: link_3d_audiostream 24@ to_actor 24@
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 3000
+
+0AAE: release_audiostream 250@
+
+
+00BC: show_text_highpriority GXT 'M1T6' time 1500 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\man\m1t6.mp3"
+ ////0AC4: link_3d_audiostream 24@ to_actor 24@
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 500
+
+0605: actor 24@ perform_animation_sequence "FIGHTA_G" IFP_file "PED" 4.0 loop 0 0 0 0 time -1 // versionA
+wait 500
+
+fade 1 1
+wait 500
+
+07CD: AS_actor 24@ walk_to 609.1468 -9.0 1000.923 stop_with_angle 178.0 within_radius 0.5
+Player.CanMove($PLAYER_CHAR) = True
+
+0635: AS_actor 22@ aim_at_actor $PLAYER_ACTOR -1 ms
+Actor.PutAt($PLAYER_ACTOR, 608.9557, -13.9195, 1000.1218)
+Actor.Angle($PLAYER_ACTOR) = 350.5351
+
+0639: AS_actor 23@ rotate_to_actor $PLAYER_ACTOR
+
+wait 500
+0AAE: release_audiostream 250@
+
+
+0605: actor $PLAYER_ACTOR perform_animation_sequence "GETUP" IFP_file "PED" 4.0 loop 0 0 0 0 time -1
+
+092F: lock_camera_target_point 1
+0930: lock_camera_position 1
+0936: set_camera 610.8643 -16.099 1000.9219 position_to 612.8774 -11.3133 1002.9219 time 11400 drop_mode 1
+0920: point_camera 608.5181 -13.0669 1000.9191 transverse_to 607.6666 -9.6854 1000.9158 time 11400 mode 1
+
+
+0639: AS_actor $PLAYER_ACTOR rotate_to_actor 23@
+
+wait 2000
+00BC: show_text_highpriority GXT 'M1T7' time 900 flag 1
+0605: actor 23@ perform_animation_sequence "IDLE_CHAT" from_file "PED" 4.0 loop 1 0 0 0 2000 ms
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\boss\m1t7.mp3"
+ //0AC4: link_3d_audiostream 23@ to_actor 23@
+ 0AAD: set_audiostream 250@ perform_action 1
+
+wait 1000
+0AAE: release_audiostream 250@
+
+00BC: show_text_highpriority GXT 'M1T8' time 2800 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\cj\m1t8.mp3"
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 3000
+0AAE: release_audiostream 250@
+
+00BC: show_text_highpriority GXT 'M1T9' time 4000 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\boss\m1t9.mp3"
+ //0AC4: link_3d_audiostream 23@ to_actor 23@
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 4400
+0AAE: release_audiostream 250@
+
+00BC: show_text_highpriority GXT 'M1T10' time 1200 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\cj\m1t10.mp3"
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 1000
+0AAE: release_audiostream 250@
+
+
+:MisjaZakladnikIntro_13
+wait 0
+if
+ 8934:   not camera_target_point_manipulated
+jf @MisjaZakladnikIntro_13
+
+
+0936: set_camera 612.8774 -11.3133 1002.9219 position_to 607.6058 -6.5979 1000.9133 time 15000 drop_mode 1
+0920: point_camera 607.6666 -9.6854 1000.9158 transverse_to 607.6354 -7.6103 1000.9095 time 15000 mode 1
+
+00BC: show_text_highpriority GXT 'M1T11' time 4900 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\boss\m1t11.mp3"
+ //0AC4: link_3d_audiostream 23@ to_actor 23@
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 5200
+0AAE: release_audiostream 250@
+
+00BC: show_text_highpriority GXT 'M1T12' time 2200 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\cj\m1t12.mp3"
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 2500
+0AAE: release_audiostream 250@
+
+00BC: show_text_highpriority GXT 'M1T13' time 6100 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\boss\m1t13.mp3"
+ //0AC4: link_3d_audiostream 23@ to_actor 23@
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 6500
+0AAE: release_audiostream 250@
+
+00BC: show_text_highpriority GXT 'M1T14' time 1200 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\cj\m1t14.mp3"
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 1500
+0AAE: release_audiostream 250@
+
+00BC: show_text_highpriority GXT 'M1T15' time 4400 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\boss\m1t15.mp3"
+ //0AC4: link_3d_audiostream 23@ to_actor 23@
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 4800
+0AAE: release_audiostream 250@
+
+:MisjaZakladnikIntro_14
+wait 0
+if
+ 8934:   not camera_target_point_manipulated
+jf @MisjaZakladnikIntro_14
+//0936: set_camera 607.6058 -6.5979 1000.9133 position_to 604.1594 -13.3177 1007.8948 time 30000 drop_mode 1
+//0920: point_camera 607.6354 -7.6103 1000.9095 transverse_to 607.7647 -11.835 1000.9162 time 5000 mode 1
+
+//067E: put_camera_on_actor 23@ with_offset -0.5 -0.5 1.5 point_to_actor $PLAYER_ACTOR 0.0 mode 1
+
+
+00BC: show_text_highpriority GXT 'M1T16' time 3100 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\boss\m1t16.mp3"
+ //0AC4: link_3d_audiostream 23@ to_actor 23@
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 3100
+0AAE: release_audiostream 250@
+
+00BC: show_text_highpriority GXT 'M1T17' time 6000 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\boss\m1t17.mp3"
+ //0AC4: link_3d_audiostream 23@ to_actor 23@
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 6200
+0AAE: release_audiostream 250@
+
+0920: point_camera 607.7647 -11.835 1000.9162 transverse_to 607.7647 -11.835 1000.9162 time 18000 mode 1
+wait 100
+
+00BC: show_text_highpriority GXT 'M1T18' time 1000 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\cj\m1t18.mp3"
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 1200
+0AAE: release_audiostream 250@
+
+00BC: show_text_highpriority GXT 'M1T19' time 6900 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\boss\m1t19.mp3"
+ //0AC4: link_3d_audiostream 23@ to_actor 23@
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 7500
+0AAE: release_audiostream 250@
+
+00BC: show_text_highpriority GXT 'M1T20' time 4000 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\cj\m1t20.mp3"
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 4500
+0AAE: release_audiostream 250@
+
+00BC: show_text_highpriority GXT 'M1T21' time 4200 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\boss\m1t21.mp3"
+ //0AC4: link_3d_audiostream 23@ to_actor 23@
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 4800
+0AAE: release_audiostream 250@
+
+00BC: show_text_highpriority GXT 'M1T22' time 5300 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\boss\m1t22.mp3"
+ //0AC4: link_3d_audiostream 23@ to_actor 23@
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 5800
+0AAE: release_audiostream 250@
+
+00BC: show_text_highpriority GXT 'M1T23' time 1400 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\cj\m1t23.mp3"
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 1900
+0AAE: release_audiostream 250@
+
+00BC: show_text_highpriority GXT 'M1T24' time 7100 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\boss\m1t24.mp3"
+ //0AC4: link_3d_audiostream 23@ to_actor 23@
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 7500
+0AAE: release_audiostream 250@
+
+00BC: show_text_highpriority GXT 'M1T25' time 2300 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\boss\m1t25.mp3"
+ //0AC4: link_3d_audiostream 23@ to_actor 23@
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 2800
+0AAE: release_audiostream 250@
+
+00BC: show_text_highpriority GXT 'M1T26' time 2600 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\cj\m1t26.mp3"
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 3000
+0AAE: release_audiostream 250@
+
+05D3: AS_actor 24@ goto_point 608.9557 -12.9195 1000.9218 mode 4 5000 ms
+05BF: AS_actor $PLAYER_ACTOR look_at_actor 24@ 10000 ms
+
+:MisjaZakladnik_check1
+wait 0
+if
+ 00ED:   actor 24@ 0 near_point 608.9557 -12.9195 radius 1.0 1.0 on_foot
+jf @MisjaZakladnik_check1
+
+01B2: give_actor 24@ weapon 23 ammo 100
+01B9: set_actor 24@ armed_weapon_to 23
+
+00BC: show_text_highpriority GXT 'M1T27' time 3000 flag 1
+ 0AAC: 250@ = load_audiostream "CLEO\INE\audio\man\m1t27.mp3"
+ 0AAD: set_audiostream 250@ perform_action 1
+wait 3000
+0AAE: release_audiostream 250@
+
+
+:MisjaZakladnikIntro_15
+wait 0
+if
+ 8934:   not camera_target_point_manipulated
+jf @MisjaZakladnikIntro_15
+
+
+:MisjaZakladnik_Scene_2_Skip
+0701: end_scene_skip
+00BE: text_clear_all
+//0ACD: show_text_highpriority "test" time 10000
+
+fade 0 1000
+gosub @Mission_Fading
+jump @Mission_Passed
+
+0687: clear_actor $PLAYER_ACTOR task
+092F: lock_camera_target_point 0
+0930: lock_camera_position 0
+Camera.Restore()
+02A3: enable_widescreen 0
+0860: link_actor $PLAYER_ACTOR to_interior 0
+select_interior 0
+Actor.PutAt($PLAYER_ACTOR, 1575.7847, -1470.8241, 14.2364)
+Actor.Angle($PLAYER_ACTOR) = 89.9041
+01B2: give_actor $PLAYER_ACTOR weapon 23 ammo 60
+01B9: set_actor $PLAYER_ACTOR armed_weapon_to 23
+Model.Destroy(#SILENCED)
+0296: unload_special_actor 1
+Actor.DestroyInstantly(23@)
+Actor.DestroyInstantly($ACTOR_SWEET)
+Actor.DestroyInstantly(22@)
+//Actor.DestroyInstantly(25@)
+Actor.DestroyInstantly(24@)
+Object.Destroy(30@)
+wait 1000
+
+fade 1 1000
+gosub @Mission_Fading
+
+Player.CanMove($PLAYER_CHAR) = True
+
+
+:MisjaZakladnikIntroExit
+if
+ Model.Available(#MICRO_UZI)
+  then
+   Model.Destroy(#MICRO_UZI)
+  end
+if
+ Model.Available(#SILENCED)
+  then
+   Model.Destroy(#SILENCED)
+  end
+if
+ Model.Available(113)
+  then
+   Model.Destroy(113)
+  end
+if
+ Model.Available(1721)
+  then
+   Model.Destroy(1721)
+  end
+if
+ Model.Available(1814)
+  then
+   Model.Destroy(1814)
+  end
+if
+ Model.Available(2894)
+  then
+   Model.Destroy(2894)
+  end
+if
+ Model.Available(#GREENWOO)
+  then
+   Model.Destroy(#GREENWOO)
+  end
+if
+ Model.Available(124)
+  then
+   Model.Destroy(124)
+  end
+if
+ Model.Available(125)
+  then
+   Model.Destroy(125)
+  end
+if
+ Model.Available(#BAT)
+  then
+   Model.Destroy(#BAT)
+  end
+
+jump @Mission_Passed
+
+
+
+
+:Mission_Fading
+while 016B:   fading
+    wait 0
+end
+return
+
+:Mission_CameraManipulated
+while 0933:   camera_position_manipulated
+    wait 0
+end
+return
+
+:Mission_Cleanup
+00D8: mission_cleanup
+return
+
+:Mission_Failed
+00BA: show_text_styled GXT 'M_FAIL' time 5000 style 1
+$ONMISSION = 0
+return
+
+:Mission_Passed
+010D: set_player $PLAYER_CHAR wanted_level_to 0
+
+0860: link_actor $PLAYER_ACTOR to_interior 0
+select_interior 0
+00A1: put_actor $PLAYER_ACTOR at 1574.3065 -1472.5518 13.0
+0395: clear_area 1 at 1574.3065 -1472.5518 13.0 radius 10.0
+
+01B2: give_actor $PLAYER_ACTOR weapon 23 ammo 100
+01B9: set_actor $PLAYER_ACTOR armed_weapon_to 23
+
+gosub @Mission_Fading
+
+fade 1 1000
+
+0@ = PASSED_MISSIONS
+0AB1: call_scm_func @REQUEST__GlobalVarRead 1 global_var PASSED_MISSIONS value_to 101@
+if
+    101@ == MISSION_NOTHING
+then
+    0@ = PASSED_MISSIONS
+    1@ = MISSION_HOSTAGE
+    0AB1: call_scm_func @REQUEST__GlobalVarWrite 2 global_var PASSED_MISSIONS value MISSION_HOSTAGE
+    0318: set_latest_mission_passed 'M1T1'
+end
+$ONMISSION = 0
+
+return
+
+{$INCLUDE mission_includes.txt}
+
+hex
+020001
+end
